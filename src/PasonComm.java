@@ -34,6 +34,11 @@ public class PasonComm {
 		return pSocket.isConnected();
 	}
 	
+	public void login()
+	{
+		this.writeLine( Const.kLoginRequest );
+	}
+	
 	public boolean close() throws IOException
 	{
 		/* Close the socket, reader, and writer */
@@ -53,5 +58,33 @@ public class PasonComm {
 	{
 		pWriter.write( s );
 		pWriter.flush();
+	}
+	
+	public static void main( String[] args )
+	{
+		/* Connect to the game server */
+		PasonComm pComm = new PasonComm();
+		try {
+			pComm.connect();
+		} catch( IOException e ) {
+			System.err.println( e );
+		}
+		
+		/* Print the connection banner */
+		try {
+			System.out.println( pComm.readLine() );
+		} catch( IOException e ) {
+			System.err.println( e );
+		}
+		
+		/* Send login request */
+		pComm.login();
+		
+		/* Print the login response */
+		try {
+			System.out.println( pComm.readLine() );
+		} catch( IOException e ) {
+			System.err.println( e );
+		}
 	}
 }

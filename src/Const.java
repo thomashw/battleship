@@ -19,4 +19,7 @@ public class Const {
 	
 	/* End all communications with a line separator */
 	public static final String kLineSeparator = "\r\n";
+	
+	/* Login string for login request */
+	public static final String kLoginRequest = kTeamName + "|" + kGamePassword + kLineSeparator;
 }
