@@ -4,6 +4,12 @@
  * Last modified: January 29, 2012
  */
 
-public class PasonComm {
+import java.net.Socket;
+import java.io.BufferedReader;
+import java.io.PrintWriter;
 
+public class PasonComm {
+	private Socket pSocket;
+	private BufferedReader reader;
+	private PrintWriter writer;
 }
