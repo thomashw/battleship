@@ -39,6 +39,11 @@ public class PasonComm {
 		this.writeLine( Const.kLoginRequest );
 	}
 	
+	public void sendShipLayout()
+	{
+		this.writeLine( Const.kShipLayout );
+	}
+	
 	public boolean close() throws IOException
 	{
 		/* Close the socket, reader, and writer */
@@ -81,6 +86,16 @@ public class PasonComm {
 		pComm.login();
 		
 		/* Print the login response */
+		try {
+			System.out.println( pComm.readLine() );
+		} catch( IOException e ) {
+			System.err.println( e );
+		}
+		
+		/* Send ship layout */
+		pComm.sendShipLayout();
+		
+		/* Print ship layout response */
 		try {
 			System.out.println( pComm.readLine() );
 		} catch( IOException e ) {

@@ -22,4 +22,16 @@ public class Const {
 	
 	/* Login string for login request */
 	public static final String kLoginRequest = kTeamName + "|" + kGamePassword + kLineSeparator;
+	
+	/* Ship layout */
+	public static final String kLayoutFF = "9,0,0;9,0,1;9,0,2";
+	public static final String kLayoutSSK = "9,0,3;9,0,4;9,0,5;9,0,6;9,0,7";
+	public static final String kLayoutDDH = "0,1,0;1,0,0;1,1,0;1,2,0;2,1,0";
+	public static final String kLayoutBB = "1,1,1;1,1,2;1,1,3;1,2,1;1,2,3;1,3,1;1,3,2;1,3,3";
+	public static final String kLayoutCVL = "0,2,2;1,2,2;2,2,2;3,2,2;4,2,2;2,0,2;2,1,2;2,3,2;2,4,2;2,2,0;2,2,1;2,2,3;2,2,4";
+	public static final String kShipLayout =	"FF:" + kLayoutFF + "|" + 
+												"SSK:" + kLayoutSSK + "|" + 
+												"DDH:" + kLayoutDDH + "|" + 
+												"BB:" + kLayoutBB + "|" + 
+												"CVL:" + kLayoutCVL + kLineSeparator;
 }
