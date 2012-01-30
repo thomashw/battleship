@@ -44,6 +44,18 @@ public class PasonComm {
 		this.writeLine( Const.kShipLayout );
 	}
 	
+	public void fire( int x, int y, int z )
+	{
+		/* Create request string */
+		String fireRequest = 	Integer.toString( x ) + "," + 
+								Integer.toString( y ) + "," + 
+								Integer.toString( z ) + 
+								Const.kLineSeparator;
+		
+		/* Send the fire request */
+		this.writeLine( fireRequest );
+	}
+	
 	public boolean close() throws IOException
 	{
 		/* Close the socket, reader, and writer */
@@ -96,6 +108,15 @@ public class PasonComm {
 		pComm.sendShipLayout();
 		
 		/* Print ship layout response */
+		try {
+			System.out.println( pComm.readLine() );
+		} catch( IOException e ) {
+			System.err.println( e );
+		}
+		
+		/* Fire on the enemy */
+		pComm.fire(0,0,0);
+		
 		try {
 			System.out.println( pComm.readLine() );
 		} catch( IOException e ) {
