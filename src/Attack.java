@@ -8,7 +8,7 @@ import java.util.*;
 public class Attack {
     /* Tracks what turn we're on */
     private static int currentTurn;
-        
+
     /* Holds HIT, MISS, or UNKNOWN info on all squares of the arena */
     AttackResponse[][][] arena;
 
@@ -37,7 +37,7 @@ public class Attack {
     {
         this.currentTurn++;
     }
-    
+
     public int getCurrentTurn()
     {
         return this.currentTurn;
@@ -45,9 +45,14 @@ public class Attack {
 
     public Coordinate generateAttack()
     {
-        int x = rand.nextInt( Const.kMaxCoord - Const.kMinCoord + 1 );
-        int y = rand.nextInt( Const.kMaxCoord - Const.kMinCoord + 1 );
-        int z = rand.nextInt( Const.kMaxCoord - Const.kMinCoord + 1 );
+        int x, y, z = 0;
+
+        /* Continue generating random points until we get a square we haven't tried yet */
+        do {
+            x = rand.nextInt( Const.kMaxCoord - Const.kMinCoord + 1 );
+            y = rand.nextInt( Const.kMaxCoord - Const.kMinCoord + 1 );
+            z = rand.nextInt( Const.kMaxCoord - Const.kMinCoord + 1 );
+        } while( arena[x][y][z] != AttackResponse.UNKNOWN );
 
         return new Coordinate( x, y, z );
     }
@@ -56,12 +61,12 @@ public class Attack {
     {
         /* Check whether the response contains HIT or MISS */
         /* and update 'arena' */
-         if( response.contains( Const.kAttackResponseStrHit ) ) {
-             arena[c.getX()][c.getY()][c.getZ()] = AttackResponse.HIT;
-         } else if( response.contains( Const.kAttackResponseStrMiss ) ) {
-             arena[c.getX()][c.getY()][c.getZ()] = AttackResponse.MISS;
-         }
-        
+        if( response.contains( Const.kAttackResponseStrHit ) ) {
+            arena[c.getX()][c.getY()][c.getZ()] = AttackResponse.HIT;
+        } else if( response.contains( Const.kAttackResponseStrMiss ) ) {
+            arena[c.getX()][c.getY()][c.getZ()] = AttackResponse.MISS;
+        }
+
         Log.WriteLog( "Result: " + arena[c.getX()][c.getY()][c.getZ()] );
     }
 }
