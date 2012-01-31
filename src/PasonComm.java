@@ -1,7 +1,6 @@
 /*
  * Author: Thomas Hewton-Waters
  * Created on: January 29, 2012
- * Last modified: January 29, 2012
  */
 
 import java.net.Socket;
@@ -75,52 +74,5 @@ public class PasonComm {
 	{
 		pWriter.write( s );
 		pWriter.flush();
-	}
-	
-	public static void main( String[] args )
-	{
-		/* Connect to the game server */
-		PasonComm pComm = new PasonComm();
-		try {
-			pComm.connect();
-		} catch( IOException e ) {
-			System.err.println( e );
-		}
-		
-		/* Print the connection banner */
-		try {
-			System.out.println( pComm.readLine() );
-		} catch( IOException e ) {
-			System.err.println( e );
-		}
-		
-		/* Send login request */
-		pComm.login();
-		
-		/* Print the login response */
-		try {
-			System.out.println( pComm.readLine() );
-		} catch( IOException e ) {
-			System.err.println( e );
-		}
-		
-		/* Send ship layout */
-		pComm.sendShipLayout();
-		
-		/* Print ship layout response */
-		try {
-			System.out.println( pComm.readLine() );
-		} catch( IOException e ) {
-			System.err.println( e );
-		}
-		
-		/* Fire on the enemy */
-		pComm.fire(0,0,0);
-		
-		try {
-			System.out.println( pComm.readLine() );
-		} catch( IOException e ) {
-			System.err.println( e );
-		}
 	}
 }
