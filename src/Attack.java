@@ -231,6 +231,111 @@ public class Attack {
                     arena[x-1][y][z] == AttackResponse.UNKNOWN )
                 probability++;
 
+        /*************/
+        /* x-z plane */
+        /*************/
+
+        /* The cell is the top-left cell in the x-z plane.                      */
+        /* Going clockwise: 2 cells in +z direction, 2 cells in -x direction,   */
+        /* 2 cells in -z direction, 2 cells in +x direction.                    */
+        if( z < (shipProbability[x][y].length - 2) && x > 1 )
+            if(     arena[x][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is the top-middle cell in the x-z plane.                    */
+        /* Going clockwise: 1 cell in +z dir, 2 cells in -x dir, 2 cells in     */
+        /* -z dir, 2 cells in +x dir.                                           */
+        if( z < (shipProbability[x][y].length - 1) && z > 0 && x > 1 )
+            if(     arena[x][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-1] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is the top-right cell in the x-z plane.                     */
+        /* Going clockwise: 2 cells in -x dir, 2 cells in -z dir, 2 cells in    */
+        /* +x dir, 2 cells in +z dir.                                           */
+        if( z > 1 && x > 1 )
+            if(     arena[x-1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-1] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is the right-middle cell in the x-z plane.                  */
+        /* Going clockwise: 1 cell in -x dir, 2 cells in -z dir, 2 cells in     */
+        /* +x dir, 2 cells in +z dir.                                           */
+        if( z > 1 && x > 0 && x < (shipProbability.length - 1) )
+            if(     arena[x-1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is the right-bottom cell in the x-z plane.                  */
+        /* Going clockwise: 2 cells in -z dir, 2 cells in +x dir, 2 cells in    */
+        /* +z dir, 1 cell in -x dir.                                            */
+        if( z > 1 && x < (shipProbability.length - 2) )
+            if(     arena[x][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is the bottom-middle cell in the x-z plane.                 */
+        /* Clockwise: 1 cell in -z, 2 in +x, 2 in +z, 2 in -x.         */
+        if( z > 0 && z < (shipProbability[x][y].length - 1) &&  x < (shipProbability.length - 2) )
+            if(     arena[x][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z+1] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is the left-bottom cell in the x-z plane.                   */
+        /* Clockwise: 2 cells +x, 2 cells +z, 2 cells -x, 1 cell -z.            */
+        if( z < (shipProbability[x][y].length - 2) && x < (shipProbability.length - 2) )
+            if(     arena[x+1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z+1] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is the left-middle cell in the x-z plane.                   */
+        /* Clockwise: 1 cell +x, 2 cells +z, 2 cells -x, 2 cells -z.            */
+        if( z < (shipProbability[x][y].length - 2) && x > 0 && x < (shipProbability.length - 1) )
+            if(     arena[x+1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z] == AttackResponse.UNKNOWN )
+                probability++;
+
         return probability;
     }
     
