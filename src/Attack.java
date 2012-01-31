@@ -133,6 +133,138 @@ public class Attack {
         /* the +y & 2 cells in the -y, or 2 cells in the +z & 2 cells in    */
         /* -z.                                                              */
 
+        /************************/
+        /* Cell is on the "end" */
+        /************************/
+
+        /* Check if 4 cells in +x direction */
+        if( x < shipProbability.length - 4 )
+            if(     arena[x+1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+3][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+4][y][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* Check if 4 cells in -x direction */
+        if( x > 3 )
+            if(     arena[x-1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-3][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-4][y][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* Check if 4 cells in +y direction */
+        if( y < shipProbability[x].length - 4 )
+            if(     arena[x][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+3][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+4][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* Check if 4 cells in -y direction */
+        if( y > 3 )
+            if(     arena[x][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-2][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-3][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-4][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* Check if 4 cells in +z direction */
+        if( z < shipProbability[x][y].length - 4 )
+            if(     arena[x][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z+3] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z+4] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* Check if 4 cells in -z direction */
+        if( z > 3 )
+            if(     arena[x][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-3] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-4] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /*********************************/
+        /* Cell is "one in from the end" */
+        /*********************************/
+
+        /* Check if 1 cell in +x & 3 cells in -x directions */
+        if( x < (shipProbability.length - 1) && x > 2 )
+            if(     arena[x+1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-3][y][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* Check if 3 cells in +x & 1 cell in -x directions */
+        if( x < (shipProbability.length - 3) && x > 0 )
+            if(     arena[x+1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+3][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* Check if 1 cell in +y & 3 cells in -y directions */
+        if( y < (shipProbability[x].length - 1) && y > 2 )
+            if(     arena[x][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-2][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-3][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* Check if 3 cells in +y & 1 cell in -y directions */
+        if( y < (shipProbability[x].length - 3) && y > 0 )
+            if(     arena[x][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+3][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* Check if 1 cell in +z & 3 cells in -z directions */
+        if( z < (shipProbability[x][y].length - 1) && z > 2 )
+            if(     arena[x][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-3] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* Check if 3 cells in +z & 1 cell in -z directions */
+        if( z < (shipProbability[x][y].length - 3) && z > 0 )
+            if(     arena[x][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z+3] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-1] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /***************************/
+        /* Cell is in the "middle" */
+        /***************************/
+
+        /* Check if 2 cells in the +x & 2 cells in the -x directions */
+        if( x < (shipProbability.length - 2) && x > 1 )
+            if(     arena[x+1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* Check if 2 cells in the +y & 2 cells in the -y directions */
+        if( y < (shipProbability.length - 2) && y > 1 )
+            if(     arena[x][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-2][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* Check if 2 cells in the +z & 2 cells in the -z directions */
+        if( z < (shipProbability.length - 2) && z > 1 )
+            if(     arena[x][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-2] == AttackResponse.UNKNOWN )
+                probability++;
+
         return probability;
     }
     
