@@ -103,6 +103,9 @@ public class Attack {
                         /* Add probability of hitting the DDH */
                         shipProbability[x][y][z] += probabilityDDH( x, y, z );
 
+                        /* Add probability of hitting the BB */
+                        shipProbability[x][y][z] += probabilityBB( x, y, z );
+
                         /* Update the best coordinate */
                         if( shipProbability[x][y][z] > currentBestAttack ) {
                             currentBestAttack = shipProbability[x][y][z];
@@ -115,14 +118,129 @@ public class Attack {
                 }
     }
     
+    private int probabilityBB( int x, int y, int z )
+    {
+        /* Assume probability is 0 */
+        int probability = 0;
+
+        /* Calculate how many ways BB could fit around this square.             */
+        /* 8 squares * 3 planes = 24 possibilities.                             */
+
+        /*************/
+        /* x-y plane */
+        /*************/
+
+        /* The cell is the top-left cell in the x-y plane.                      */
+        /* Going clockwise: 2 cells in +y direction, 2 cells in -x direction,   */
+        /* 2 cells in -y direction, 2 cells in +x direction.                    */
+        if( y < (shipProbability[x].length - 2) && x > 1 )
+            if(     arena[x][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is the top-middle cell in the x-y plane.                    */
+        /* Going clockwise: 1 cell in +y dir, 2 cells in -x dir, 2 cells in     */
+        /* -y dir, 2 cells in +x dir.                                           */
+        if( y < (shipProbability[x].length - 1) && y > 0 && x > 1 )
+            if(     arena[x][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is the top-right cell in the x-y plane.                     */
+        /* Going clockwise: 2 cells in -x dir, 2 cells in -y dir, 2 cells in    */
+        /* +x dir, 2 cells in +y dir.                                           */
+        if( y > 1 && x > 1 )
+            if(     arena[x-1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y-2][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y-2][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-2][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is the right-middle cell in the x-y plane.                  */
+        /* Going clockwise: 1 cell in -x dir, 2 cells in -y dir, 2 cells in     */
+        /* +x dir, 2 cells in +y dir.                                           */
+        if( y > 1 && x > 0 && x < (shipProbability.length - 1) )
+            if(     arena[x-1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y-2][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-2][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y-2][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is the right-bottom cell in the x-y plane.                  */
+        /* Going clockwise: 2 cells in -y dir, 2 cells in +x dir, 2 cells in    */
+        /* +y dir, 1 cell in -x dir.                                            */
+        if( y > 1 && x < (shipProbability.length - 2) )
+            if(     arena[x][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-2][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y-2][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y-2][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is the bottom-middle cell in the x-y plane.                 */
+        /* Clockwise: 1 cell in -y, 2 in +x, 2 in +y, 2 in -x, 1 in -y.         */
+        if( y > 0 && y < (shipProbability[x].length - 1) &&  x < (shipProbability.length - 2) )
+            if(     arena[x][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+1][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is the left-bottom cell in the x-y plane.                   */
+        /* Clockwise: 2 cells +x, 2 cells +y, 2 cells -x, 1 cell -y.            */
+        if( y < (shipProbability[x].length - 2) && x < (shipProbability.length - 2) )
+            if(     arena[x+1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+1][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is the left-middle cell in the x-y plane.                   */
+        /* Clockwise: 1 cell +x, 2 cells +y, 2 cells -x, 2 cells -y.            */
+        if( y < (shipProbability[x].length - 2) && x > 0 && x < (shipProbability.length - 1) )
+            if(     arena[x+1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        return probability;
+    }
+    
     private int probabilityDDH( int x, int y, int z )
     {
         /* Assume probability is 0 */
         int probability = 0;
 
-        /* Calculate how many ways DDH could fit around this square .           */
-        /* 15 possibilities (I believe).                                        */
-
+        /* Calculate how many ways DDH could fit around this square.            */
+        /* 5 squares * 3 planes = 15 possibilities.                             */
 
         /*************/
         /* x-y plane */
