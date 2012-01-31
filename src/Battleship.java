@@ -58,10 +58,13 @@ public class Battleship {
         }
 
         /* Fire on the enemy */
-        bShip.pComm.fire( bShip.attack.generateAttack() );
+        Coordinate attackCoordinate = bShip.attack.generateAttack();
+        bShip.pComm.fire( attackCoordinate );
 
+        /* Process the response (HIT/MISS) */
         try {
-            Log.WriteLog( bShip.pComm.readLine() );
+            String attackResponse = bShip.pComm.readLine();
+            bShip.attack.processAttackResponse( attackResponse, attackCoordinate );
         } catch( IOException e ) {
             System.err.println( e );
         }

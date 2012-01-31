@@ -32,7 +32,20 @@ public class Attack {
         int x = rand.nextInt( Const.kMaxCoord - Const.kMinCoord + 1 );
         int y = rand.nextInt( Const.kMaxCoord - Const.kMinCoord + 1 );
         int z = rand.nextInt( Const.kMaxCoord - Const.kMinCoord + 1 );
-        
+
         return new Coordinate( x, y, z );
+    }
+
+    public void processAttackResponse( String response, Coordinate c )
+    {
+        /* Check whether the response contains HIT or MISS */
+        /* and update 'arena' */
+         if( response.contains( Const.kAttackResponseHit ) ) {
+             arena[c.getX()][c.getY()][c.getZ()] = AttackResponse.HIT;
+         } else if( response.contains( Const.kAttackResponseMiss ) ) {
+             arena[c.getX()][c.getY()][c.getZ()] = AttackResponse.MISS;
+         }
+        
+        Log.WriteLog( "Result: " + arena[c.getX()][c.getY()][c.getZ()] );
     }
 }
