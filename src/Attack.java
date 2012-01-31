@@ -14,6 +14,10 @@ public class Attack {
 
     /* Once we hit a ship, we'll switch to sink until we've sunk it */
     AttackMode attackMode;
+    
+    /* Holds an array of coordinates of the latest HITS while in AttackModeSink */
+    int numHits;
+    Coordinate[] hitCoordinates;
 
     /* Tracks what turn we're on */
     private static int currentTurn;
@@ -38,6 +42,10 @@ public class Attack {
 
         /* Begin by searching for ships */
         attackMode = AttackMode.AttackModeSearch;
+
+        /* Is used while in AttackModeSink to continue finding the ship. Emptied after each ship is sunk. */
+        numHits = 0;
+        hitCoordinates = new Coordinate[Const.kMaxHitCoords];
 
         /* Create array of size of the game to holds HIT/MISS/UNKNOWN for each square */
         arena = new AttackResponse[Const.kGameDimensionX][Const.kGameDimensionY][Const.kGameDimensionZ];
@@ -756,8 +764,17 @@ public class Attack {
         /* Check whether the response contains HIT or MISS */
         /* and update 'arena' */
         if( response.contains( Const.kAttackResponseStrHit ) ) {
+            /* Update the arena */
             arena[c.getX()][c.getY()][c.getZ()] = AttackResponse.HIT;
+
+            /* Switch to AttackModeSink */
+            attackMode = AttackMode.AttackModeSink;
+
+            /* Update the hit coordinates array */
+            hitCoordinates[numHits++] = new Coordinate( c.getX(), c.getY(), c.getZ() );
+
         } else if( response.contains( Const.kAttackResponseStrMiss ) ) {
+            /* Update the arena */
             arena[c.getX()][c.getY()][c.getZ()] = AttackResponse.MISS;
         }
 
