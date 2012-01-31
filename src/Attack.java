@@ -93,44 +93,12 @@ public class Attack {
                     if( arena[x][y][z] != AttackResponse.UNKNOWN ) {
                         continue;
                     } else {
-                        /* Calculate how many ways FF could fit into this square.                   */
-                        /* Assuming the cell is an "end" cell, an FF could fit if there             */
-                        /* were 2 cells in the +x direction, 2 cells in the -x direction,           */
-                        /* 2 cells in the +y direction, 2 cells in the -y direction,                */
-                        /* 2 cells in the +z direction, or 2 cells in the -z direction.             */
-                        /* Assuming the cell is a "middle" cell, an FF could fit if there           */
-                        /* were 1 cell in the +z & 1 cell in the -z, 1 cell in the +x & 1 cell      */
-                        /* in the -x, or 1 cell in the +y & 1 cell in the -y.                       */
 
-                        /* Check if 2 cells in the +x direction */
-                        if( x < (shipProbability.length - 2) )
-                            if( arena[x+1][y][z] == AttackResponse.UNKNOWN && arena[x+2][y][z] == AttackResponse.UNKNOWN )
-                                shipProbability[x][y][z]++;
+                        /* Add probability of hitting the FF */
+                        shipProbability[x][y][z] += probabilityFF( x, y, z );
 
-                        /* Check if 2 cells in the -x direction */
-                        if( x > 1 )
-                            if( arena[x-1][y][z] == AttackResponse.UNKNOWN && arena[x-2][y][z] == AttackResponse.UNKNOWN )
-                                shipProbability[x][y][z]++;
-
-                        /* Check if 2 cells in the +y direction */
-                        if( y < (shipProbability[x].length - 2) )
-                            if( arena[x][y+1][z] == AttackResponse.UNKNOWN && arena[x][y+2][z] == AttackResponse.UNKNOWN )
-                                shipProbability[x][y][z]++;
-
-                        /* Check if 2 cells in the -y direction */
-                        if( y > 1 )
-                            if( arena[x][y-1][z] == AttackResponse.UNKNOWN && arena[x][y-2][z] == AttackResponse.UNKNOWN )
-                                shipProbability[x][y][z]++;
-
-                        /* Check if 2 cells in the +z direction */
-                        if( z < (shipProbability[x][y].length - 2) )
-                            if( arena[x][y][z+1] == AttackResponse.UNKNOWN && arena[x][y][z+2] == AttackResponse.UNKNOWN )
-                                shipProbability[x][y][z]++;
-
-                        /* Check if 2 cells in the -z direction */
-                        if( z > 1 )
-                            if( arena[x][y][z-1] == AttackResponse.UNKNOWN && arena[x][y][z-2] == AttackResponse.UNKNOWN )
-                                shipProbability[x][y][z]++;
+                        /* Add probability of hitting the SSK */
+                        shipProbability[x][y][z] += probabilitySSK( x, y, z );
 
                         /* Update the best coordinate */
                         if( shipProbability[x][y][z] > currentBestAttack ) {
@@ -142,6 +110,92 @@ public class Attack {
                         }
                     }
                 }
+    }
+    
+    private int probabilitySSK( int x, int y, int z )
+    {
+        /* Assume probability is 0 */
+        int probability = 0;
+
+        /* Calculate how many ways SSK could fit around this square.        */
+        /* Assuming the cell is an "end" cell, an SSK could fit if there    */
+        /* were 4 cells in the +x direction, 4 cells in the -x direction,   */
+        /* 4 cells in the +y direction, 4 cells in the -y direction,        */
+        /* 4 cells in the +z direction, or 4 cells in the -z direction.     */
+        /* Assuming the cell is "one in from the end", an SSK could fit     */
+        /* if there were 1 cell in the +x & 3 cells in the -x,              */
+        /* 1 cell in the -x & 3 cells in the +x, 1 cell in the -y &         */
+        /* 3 cells in the +y, 1 cell in the +y & 3 cells in the -y,         */
+        /* 1 cell in the +z & 3 cells in the -z, or 1 cell in the -z        */
+        /* & 3 cells in the +z.                                             */
+        /* Assuming the cell is the "middle" cell, an SSK could fit if      */
+        /* there were 2 cells in the +x & 2 cells in the -x, 2 cells in     */
+        /* the +y & 2 cells in the -y, or 2 cells in the +z & 2 cells in    */
+        /* -z.                                                              */
+
+        return probability;
+    }
+    
+    private int probabilityFF( int x, int y, int z )
+    {
+        /* Assume probability is 0 */
+        int probability = 0;
+
+        /* Calculate how many ways FF could fit around this square.                 */
+        /* Assuming the cell is an "end" cell, an FF could fit if there             */
+        /* were 2 cells in the +x direction, 2 cells in the -x direction,           */
+        /* 2 cells in the +y direction, 2 cells in the -y direction,                */
+        /* 2 cells in the +z direction, or 2 cells in the -z direction.             */
+        /* Assuming the cell is a "middle" cell, an FF could fit if there           */
+        /* were 1 cell in the +z & 1 cell in the -z, 1 cell in the +x & 1 cell      */
+        /* in the -x, or 1 cell in the +y & 1 cell in the -y.                       */
+
+        /* Check if 2 cells in the +x direction */
+        if( x < (shipProbability.length - 2) )
+            if( arena[x+1][y][z] == AttackResponse.UNKNOWN && arena[x+2][y][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* Check if 2 cells in the -x direction */
+        if( x > 1 )
+            if( arena[x-1][y][z] == AttackResponse.UNKNOWN && arena[x-2][y][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* Check if 2 cells in the +y direction */
+        if( y < (shipProbability[x].length - 2) )
+            if( arena[x][y+1][z] == AttackResponse.UNKNOWN && arena[x][y+2][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* Check if 2 cells in the -y direction */
+        if( y > 1 )
+            if( arena[x][y-1][z] == AttackResponse.UNKNOWN && arena[x][y-2][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* Check if 2 cells in the +z direction */
+        if( z < (shipProbability[x][y].length - 2) )
+            if( arena[x][y][z+1] == AttackResponse.UNKNOWN && arena[x][y][z+2] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* Check if 2 cells in the -z direction */
+        if( z > 1 )
+            if( arena[x][y][z-1] == AttackResponse.UNKNOWN && arena[x][y][z-2] == AttackResponse.UNKNOWN )
+                probability++;
+        
+        /* Check if 1 cell +x & 1 cell -x */
+        if( x < shipProbability.length - 1 && x > 0 )
+            if( arena[x+1][y][z] == AttackResponse.UNKNOWN && arena[x-1][y][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* Check if 1 cell +y & 1 cell -y */
+        if( y < shipProbability[x].length - 1 && y > 0 )
+            if( arena[x][y+1][z] == AttackResponse.UNKNOWN && arena[x][y-1][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* Check if 1 cell +z & 1 cell -z */
+        if( z < shipProbability[x][y].length - 1 && z > 0 )
+            if( arena[x][y][z+1] == AttackResponse.UNKNOWN && arena[x][y][z-1] == AttackResponse.UNKNOWN )
+                probability++;
+
+        return probability;
     }
 
     public void processAttackResponse( String response, Coordinate c )
