@@ -14,7 +14,7 @@ public class Attack {
 
     /* Once we hit a ship, we'll switch to sink until we've sunk it */
     AttackMode attackMode;
-    
+
     /* Holds an array of coordinates of the latest HITS while in AttackModeSink */
     int numHits;
     Coordinate[] hitCoordinates;
@@ -97,9 +97,11 @@ public class Attack {
                 bestAttackCoordinate.setZ( z );
 
                 /* Find the most likely square to contain a ship (also updates best attack coordinate) */
-                calculateArenaProbabilities();
+                calculateSearchProbabilities();
                 break;
             case AttackModeSink:
+                /* Find the most likely square to contain a ship after a hit */
+                calculateSinkProbabilities();
                 break;
             default:
                 break;
@@ -108,7 +110,7 @@ public class Attack {
         return bestAttackCoordinate;
     }
 
-    private void calculateArenaProbabilities()
+    private void calculateSearchProbabilities()
     {
         currentBestAttack = 0;
 
@@ -145,6 +147,102 @@ public class Attack {
                         }
                     }
                 }
+    }
+
+    private void calculateSinkProbabilities()
+    {
+        currentBestAttack = 0;
+        int x, y, z;
+
+        /* Loop through all the hits and calculate the next best cell to fire at */
+        for( int i = 0; i < numHits; i++ ) {
+            for( int j = 0; j < 6; j++ ) {
+
+                /* Get the hit coordinates */
+                x = hitCoordinates[i].getX();
+                y = hitCoordinates[i].getY();
+                z = hitCoordinates[i].getZ();
+
+                /* Now we want to test all the cells around this hit to see which has the highest probability   */
+                /* of containing a ship.                                                                        */
+
+                switch ( j ) {
+                    case 0:
+                    /* Try the cell in the -x dir. */
+                    if( x > 0 )
+                        x--;
+                    else
+                        continue;
+                    break;
+
+                    case 1:
+                    /* Try the cell in the +x dir. */
+                    if( x < shipProbability.length - 1 )
+                        x++;
+                    else
+                        continue;
+                    break;
+
+                    case 2:
+                    /* Try the cell in the -y dir. */
+                    if( y > 0 )
+                        y--;
+                    else
+                        continue;
+                    break;
+
+                    case 3:
+                    /* Try the cell in the +y dir. */
+                    if( y < shipProbability[x].length - 1 )
+                        y++;
+                    else
+                        continue;
+                    break;
+
+                    case 4:
+                    /* Try the cell in the -z dir. */
+                    if( z > 0 )
+                        z--;
+                    else
+                        continue;
+                    break;
+
+                    case 5:
+                    /* Try the cell in the +z dir. */
+                    if( z < shipProbability[x][y].length - 1 )
+                        z++;
+                    else
+                        continue;
+                    break;
+
+                    default:
+                        break;
+                }
+
+                shipProbability[x][y][z] = 0;
+
+                /* Add probability of hitting the FF */
+                shipProbability[x][y][z] += Probability.probabilityFF( x, y, z, arena );
+
+                /* Add probability of hitting the SSK */
+                shipProbability[x][y][z] += Probability.probabilitySSK( x, y, z, arena );
+
+                /* Add probability of hitting the DDH */
+                shipProbability[x][y][z] += Probability.probabilityDDH( x, y, z, arena );
+
+                /* Add probability of hitting the BB */
+                shipProbability[x][y][z] += Probability.probabilityBB( x, y, z, arena );
+
+                /* Update the best coordinate */
+                if( shipProbability[x][y][z] > currentBestAttack ) {
+                    currentBestAttack = shipProbability[x][y][z];
+
+                    bestAttackCoordinate.setX( x );
+                    bestAttackCoordinate.setY( y );
+                    bestAttackCoordinate.setZ( z );
+                }
+            }
+        }
     }
 
     public void processAttackResponse( String response, Coordinate c )
