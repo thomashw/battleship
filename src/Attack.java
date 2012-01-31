@@ -25,8 +25,11 @@ public class Attack {
     /* Holds HIT, MISS, or UNKNOWN info on all squares of the arena */
     AttackResponse[][][] arena;
 
-    /* Each index holds the probability of a ship being at that index in the arena */
-    int[][][] shipProbability;
+    /* Each index indicates the probability of a ship being at that index in the arena while in search mode */
+    int[][][] shipSearchProbability;
+    
+    /* Each index indicates the probability of a ship being at that index in the arena while in sink mode */
+    int[][][] shipSinkProbability;
 
     /* Holds the coordinate with the current highest probability of holding a ship */
     int currentBestAttack;
@@ -50,8 +53,11 @@ public class Attack {
         /* Create array of size of the game to holds HIT/MISS/UNKNOWN for each square */
         arena = new AttackResponse[Const.kGameDimensionX][Const.kGameDimensionY][Const.kGameDimensionZ];
 
-        /* Create array of size of the game to hold probability of a ship being at each square */
-        shipProbability = new int[Const.kGameDimensionX][Const.kGameDimensionY][Const.kGameDimensionZ];
+        /* Create array of size of the game to hold probability of a ship being at each square while searching */
+        shipSearchProbability = new int[Const.kGameDimensionX][Const.kGameDimensionY][Const.kGameDimensionZ];
+
+        /* Create array of size of the game to hold probability of a ship being at each square while sinking */
+        shipSinkProbability = new int[Const.kGameDimensionX][Const.kGameDimensionY][Const.kGameDimensionZ];
 
         /* Create the best attack coordinate to hold the coordinate with the highest probability */
         /* of hiding a ship. It changes every turn based on misses/hits */
@@ -92,9 +98,9 @@ public class Attack {
                 } while( arena[x][y][z] != AttackResponse.UNKNOWN );
 
                 /* Update best attack coordinate */
-                bestAttackCoordinate.setX( x );
-                bestAttackCoordinate.setY( y );
-                bestAttackCoordinate.setZ( z );
+                bestAttackCoordinate.x = x;
+                bestAttackCoordinate.y = y;
+                bestAttackCoordinate.z = z;
 
                 /* Find the most likely square to contain a ship (also updates best attack coordinate) */
                 calculateSearchProbabilities();
@@ -114,10 +120,10 @@ public class Attack {
     {
         currentBestAttack = 0;
 
-        for( int x = 0; x < shipProbability.length; x++ )
-            for( int y = 0; y < shipProbability[x].length; y++ )
-                for( int z = 0; z < shipProbability[x][y].length; z++ ) {
-                    shipProbability[x][y][z] = 0;
+        for( int x = 0; x < shipSearchProbability.length; x++ )
+            for( int y = 0; y < shipSearchProbability[x].length; y++ )
+                for( int z = 0; z < shipSearchProbability[x][y].length; z++ ) {
+                    shipSearchProbability[x][y][z] = 0;
 
                     /* If the cell us UNKNOWN, calculate how many ways ships could fit into it  */
                     /* and update the probability array. Otherwise, skip it.                    */
@@ -126,24 +132,24 @@ public class Attack {
                     } else {
 
                         /* Add probability of hitting the FF */
-                        shipProbability[x][y][z] += Probability.probabilityFF( x, y, z, arena );
+                        shipSearchProbability[x][y][z] += Probability.probabilityFF( x, y, z, arena );
 
                         /* Add probability of hitting the SSK */
-                        shipProbability[x][y][z] += Probability.probabilitySSK( x, y, z, arena );
+                        shipSearchProbability[x][y][z] += Probability.probabilitySSK( x, y, z, arena );
 
                         /* Add probability of hitting the DDH */
-                        shipProbability[x][y][z] += Probability.probabilityDDH( x, y, z, arena );
+                        shipSearchProbability[x][y][z] += Probability.probabilityDDH( x, y, z, arena );
 
                         /* Add probability of hitting the BB */
-                        shipProbability[x][y][z] += Probability.probabilityBB( x, y, z, arena );
+                        shipSearchProbability[x][y][z] += Probability.probabilityBB( x, y, z, arena );
 
                         /* Update the best coordinate */
-                        if( shipProbability[x][y][z] > currentBestAttack ) {
-                            currentBestAttack = shipProbability[x][y][z];
+                        if( shipSearchProbability[x][y][z] > currentBestAttack ) {
+                            currentBestAttack = shipSearchProbability[x][y][z];
 
-                            bestAttackCoordinate.setX( x );
-                            bestAttackCoordinate.setY( y );
-                            bestAttackCoordinate.setZ( z );
+                            bestAttackCoordinate.x = x ;
+                            bestAttackCoordinate.y = y;
+                            bestAttackCoordinate.z = z;
                         }
                     }
                 }
@@ -159,87 +165,34 @@ public class Attack {
             for( int j = 0; j < 6; j++ ) {
 
                 /* Get the hit coordinates */
-                x = hitCoordinates[i].getX();
-                y = hitCoordinates[i].getY();
-                z = hitCoordinates[i].getZ();
+                x = hitCoordinates[i].x;
+                y = hitCoordinates[i].y;
+                z = hitCoordinates[i].z;
 
                 /* Now we want to test all the cells around this hit to see which has the highest probability   */
                 /* of containing a ship.                                                                        */
 
-                switch ( j ) {
-                    case 0:
-                    /* Try the cell in the -x dir. */
-                    if( x > 0 )
-                        x--;
-                    else
-                        continue;
-                    break;
-
-                    case 1:
-                    /* Try the cell in the +x dir. */
-                    if( x < shipProbability.length - 1 )
-                        x++;
-                    else
-                        continue;
-                    break;
-
-                    case 2:
-                    /* Try the cell in the -y dir. */
-                    if( y > 0 )
-                        y--;
-                    else
-                        continue;
-                    break;
-
-                    case 3:
-                    /* Try the cell in the +y dir. */
-                    if( y < shipProbability[x].length - 1 )
-                        y++;
-                    else
-                        continue;
-                    break;
-
-                    case 4:
-                    /* Try the cell in the -z dir. */
-                    if( z > 0 )
-                        z--;
-                    else
-                        continue;
-                    break;
-
-                    case 5:
-                    /* Try the cell in the +z dir. */
-                    if( z < shipProbability[x][y].length - 1 )
-                        z++;
-                    else
-                        continue;
-                    break;
-
-                    default:
-                        break;
-                }
-
-                shipProbability[x][y][z] = 0;
+                shipSearchProbability[x][y][z] = 0;
 
                 /* Add probability of hitting the FF */
-                shipProbability[x][y][z] += Probability.probabilityFF( x, y, z, arena );
+                shipSearchProbability[x][y][z] += Probability.probabilityFF( x, y, z, arena );
 
                 /* Add probability of hitting the SSK */
-                shipProbability[x][y][z] += Probability.probabilitySSK( x, y, z, arena );
+                shipSearchProbability[x][y][z] += Probability.probabilitySSK( x, y, z, arena );
 
                 /* Add probability of hitting the DDH */
-                shipProbability[x][y][z] += Probability.probabilityDDH( x, y, z, arena );
+                shipSearchProbability[x][y][z] += Probability.probabilityDDH( x, y, z, arena );
 
                 /* Add probability of hitting the BB */
-                shipProbability[x][y][z] += Probability.probabilityBB( x, y, z, arena );
+                shipSearchProbability[x][y][z] += Probability.probabilityBB( x, y, z, arena );
 
                 /* Update the best coordinate */
-                if( shipProbability[x][y][z] > currentBestAttack ) {
-                    currentBestAttack = shipProbability[x][y][z];
+                if( shipSearchProbability[x][y][z] > currentBestAttack ) {
+                    currentBestAttack = shipSearchProbability[x][y][z];
 
-                    bestAttackCoordinate.setX( x );
-                    bestAttackCoordinate.setY( y );
-                    bestAttackCoordinate.setZ( z );
+                    bestAttackCoordinate.x = x;
+                    bestAttackCoordinate.y = y;
+                    bestAttackCoordinate.z = z;
                 }
             }
         }
@@ -251,19 +204,19 @@ public class Attack {
         /* and update 'arena' */
         if( response.contains( Const.kAttackResponseStrHit ) ) {
             /* Update the arena */
-            arena[c.getX()][c.getY()][c.getZ()] = AttackResponse.HIT;
+            arena[c.x][c.y][c.z] = AttackResponse.HIT;
 
             /* Switch to AttackModeSink */
             attackMode = AttackMode.AttackModeSink;
 
             /* Update the hit coordinates array */
-            hitCoordinates[numHits++] = new Coordinate( c.getX(), c.getY(), c.getZ() );
+            hitCoordinates[numHits++] = new Coordinate( c.x, c.y, c.z );
 
         } else if( response.contains( Const.kAttackResponseStrMiss ) ) {
             /* Update the arena */
-            arena[c.getX()][c.getY()][c.getZ()] = AttackResponse.MISS;
+            arena[c.x][c.y][c.z] = AttackResponse.MISS;
         }
 
-        Log.WriteLog( "Result: " + arena[c.getX()][c.getY()][c.getZ()] );
+        Log.WriteLog( "Result: " + arena[c.x][c.y][c.z] );
     }
 }
