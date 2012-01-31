@@ -26,9 +26,9 @@ public class Battleship {
             System.err.println( e );
         }
 
-        /* Print the connection banner */
+        /* Log the connection banner */
         try {
-            System.out.println( bShip.pComm.readLine() );
+            Log.WriteLog( bShip.pComm.readLine() );
         } catch( IOException e ) {
             System.err.println( e );
         }
@@ -38,7 +38,7 @@ public class Battleship {
 
         /* Print the login response */
         try {
-            System.out.println( bShip.pComm.readLine() );
+            Log.WriteLog( bShip.pComm.readLine() );
         } catch( IOException e ) {
             System.err.println( e );
         }
@@ -48,7 +48,7 @@ public class Battleship {
 
         /* Print ship layout response */
         try {
-            System.out.println( bShip.pComm.readLine() );
+            Log.WriteLog( bShip.pComm.readLine() );
         } catch( IOException e ) {
             System.err.println( e );
         }
@@ -57,7 +57,7 @@ public class Battleship {
         bShip.pComm.fire(0,0,0);
 
         try {
-            System.out.println( bShip.pComm.readLine() );
+            Log.WriteLog( bShip.pComm.readLine() );
         } catch( IOException e ) {
             System.err.println( e );
         }
