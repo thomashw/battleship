@@ -6,6 +6,15 @@
 import java.util.*;
 
 public class Attack {
+
+    private enum AttackMode {
+        AttackModeSearch,
+        AttackModeSink
+    }
+
+    /* Once we hit a ship, we'll switch to sink until we've sunk it */
+    AttackMode attackMode;
+
     /* Tracks what turn we're on */
     private static int currentTurn;
 
@@ -26,6 +35,9 @@ public class Attack {
     {
         /* Initialize to 1 for first turn */
         currentTurn = 1;
+
+        /* Begin by searching for ships */
+        attackMode = AttackMode.AttackModeSearch;
 
         /* Create array of size of the game to holds HIT/MISS/UNKNOWN for each square */
         arena = new AttackResponse[Const.kGameDimensionX][Const.kGameDimensionY][Const.kGameDimensionZ];
@@ -61,20 +73,29 @@ public class Attack {
     {
         int x, y, z;
 
-        /* Generate a random point */
-        do {
-            x = rand.nextInt( Const.kMaxCoord - Const.kMinCoord + 1 );
-            y = rand.nextInt( Const.kMaxCoord - Const.kMinCoord + 1 );
-            z = rand.nextInt( Const.kMaxCoord - Const.kMinCoord + 1 );
-        } while( arena[x][y][z] != AttackResponse.UNKNOWN );
+        switch (attackMode) {
+            case AttackModeSearch:
 
-        /* Update best attack coordinate */
-        bestAttackCoordinate.setX( x );
-        bestAttackCoordinate.setY( y );
-        bestAttackCoordinate.setZ( z );
+                /* Generate a random point */
+                do {
+                    x = rand.nextInt( Const.kMaxCoord - Const.kMinCoord + 1 );
+                    y = rand.nextInt( Const.kMaxCoord - Const.kMinCoord + 1 );
+                    z = rand.nextInt( Const.kMaxCoord - Const.kMinCoord + 1 );
+                } while( arena[x][y][z] != AttackResponse.UNKNOWN );
 
-        /* Find the most likely square to contain a ship (also updates best attack coordinate) */
-        calculateArenaProbabilities();
+                /* Update best attack coordinate */
+                bestAttackCoordinate.setX( x );
+                bestAttackCoordinate.setY( y );
+                bestAttackCoordinate.setZ( z );
+
+                /* Find the most likely square to contain a ship (also updates best attack coordinate) */
+                calculateArenaProbabilities();
+                break;
+            case AttackModeSink:
+                break;
+            default:
+                break;
+        }
 
         return bestAttackCoordinate;
     }
@@ -117,7 +138,7 @@ public class Attack {
                     }
                 }
     }
-    
+
     private int probabilityBB( int x, int y, int z )
     {
         /* Assume probability is 0 */
@@ -338,7 +359,7 @@ public class Attack {
 
         return probability;
     }
-    
+
     private int probabilityDDH( int x, int y, int z )
     {
         /* Assume probability is 0 */
@@ -511,7 +532,7 @@ public class Attack {
 
         return probability;
     }
-    
+
     private int probabilitySSK( int x, int y, int z )
     {
         /* Assume probability is 0 */
@@ -667,7 +688,7 @@ public class Attack {
 
         return probability;
     }
-    
+
     private int probabilityFF( int x, int y, int z )
     {
         /* Assume probability is 0 */
@@ -711,7 +732,7 @@ public class Attack {
         if( z > 1 )
             if( arena[x][y][z-1] == AttackResponse.UNKNOWN && arena[x][y][z-2] == AttackResponse.UNKNOWN )
                 probability++;
-        
+
         /* Check if 1 cell +x & 1 cell -x */
         if( x < shipProbability.length - 1 && x > 0 )
             if( arena[x+1][y][z] == AttackResponse.UNKNOWN && arena[x-1][y][z] == AttackResponse.UNKNOWN )
