@@ -7,11 +7,15 @@ import java.io.IOException;
 
 public class Battleship {
     public PasonComm pComm;
+    public Attack attack;
 
     public Battleship()
     {
-        this.pComm = new PasonComm();
         Log.WriteLog( "Connecting to Pason server." );
+        this.pComm = new PasonComm();
+        
+        Log.WriteLog( "Initializing Attack object." );
+        this.attack = new Attack();
     }
     
     public static void main( String[] args )
@@ -28,7 +32,7 @@ public class Battleship {
 
         /* Log the connection banner */
         try {
-            Log.WriteLog( bShip.pComm.readLine() );
+            Log.WriteLog(bShip.pComm.readLine());
         } catch( IOException e ) {
             System.err.println( e );
         }
@@ -38,7 +42,7 @@ public class Battleship {
 
         /* Print the login response */
         try {
-            Log.WriteLog( bShip.pComm.readLine() );
+            Log.WriteLog(bShip.pComm.readLine());
         } catch( IOException e ) {
             System.err.println( e );
         }
@@ -48,7 +52,7 @@ public class Battleship {
 
         /* Print ship layout response */
         try {
-            Log.WriteLog( bShip.pComm.readLine() );
+            Log.WriteLog(bShip.pComm.readLine());
         } catch( IOException e ) {
             System.err.println( e );
         }
@@ -57,7 +61,7 @@ public class Battleship {
         bShip.pComm.fire(0,0,0);
 
         try {
-            Log.WriteLog( bShip.pComm.readLine() );
+            Log.WriteLog(bShip.pComm.readLine());
         } catch( IOException e ) {
             System.err.println( e );
         }

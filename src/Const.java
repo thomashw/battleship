@@ -33,4 +33,8 @@ public class Const {
 												"DDH:" + kLayoutDDH + "|" + 
 												"BB:" + kLayoutBB + "|" + 
 												"CVL:" + kLayoutCVL + kLineSeparator;
+    
+    public static final int kGameDimensionX = 10;
+    public static final int kGameDimensionY = 10;
+    public static final int kGameDimensionZ = 10;
 }
