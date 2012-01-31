@@ -42,4 +42,7 @@ public class Const {
     
     public static final String kAttackResponseHit = "HIT";
     public static final String kAttackResponseMiss = "MISS";
+    
+    public static final String kGameOverLose = "LOSE";
+    public static final String kGameOverWin = "WIN";
 }

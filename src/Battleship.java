@@ -13,16 +13,16 @@ public class Battleship {
     {
         Log.WriteLog( "Initializing PasonComm object." );
         this.pComm = new PasonComm();
-        
+
         Log.WriteLog( "Initializing Attack object." );
         this.attack = new Attack();
     }
-    
+
     public static void main( String[] args )
     {
         Log.WriteLog( "\nStarting new game." );
         Battleship bShip = new Battleship();
-        
+
         /* Connect to the game server */
         try {
             bShip.pComm.connect();
@@ -58,15 +58,21 @@ public class Battleship {
         }
 
         /* Fire on the enemy */
-        Coordinate attackCoordinate = bShip.attack.generateAttack();
-        bShip.pComm.fire( attackCoordinate );
+        String attackResponse = new String();
 
-        /* Process the response (HIT/MISS) */
-        try {
-            String attackResponse = bShip.pComm.readLine();
-            bShip.attack.processAttackResponse( attackResponse, attackCoordinate );
-        } catch( IOException e ) {
-            System.err.println( e );
+        while( !attackResponse.contains( Const.kGameOverLose ) && !attackResponse.contains( Const.kGameOverWin ) ) {
+
+            Coordinate attackCoordinate = bShip.attack.generateAttack();
+            bShip.pComm.fire( attackCoordinate );
+
+            /* Process the response (HIT/MISS) */
+            try {
+                attackResponse = bShip.pComm.readLine();
+                Log.WriteLog( "Attack response: " + attackResponse );
+                bShip.attack.processAttackResponse(attackResponse, attackCoordinate);
+            } catch( IOException e ) {
+                System.err.println( e );
+            }
         }
     }
 }
