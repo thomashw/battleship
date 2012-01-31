@@ -13,18 +13,23 @@ public class PasonComm {
 	
 	public boolean connect() throws IOException
 	{
+        Log.WriteLog( "Connecting to Pason server." );
+
 		/* Connect to the game server */
 		this.pSocket = new Socket( Const.kServerUrl, Const.kServerPort );
 		
 		if( this.pSocket.isConnected() ) {
+            Log.WriteLog( "Connected to Pason server." );
+
 			/* If connected, create the reader and writer */
 			pReader = new BufferedReader( new InputStreamReader( pSocket.getInputStream() ) );
 			pWriter = new PrintWriter( pSocket.getOutputStream() );
 			
 			return true;
 		}
-		
+
 		/* Connection failed */
+        Log.WriteLog( "Pason server connection failed." );
 		return false;
 	}
 	
@@ -35,24 +40,26 @@ public class PasonComm {
 	
 	public void login()
 	{
+        Log.WriteLog( "Logging in to the game." );
 		this.writeLine( Const.kLoginRequest );
 	}
 	
 	public void sendShipLayout()
 	{
+        Log.WriteLog( "Sending ship layout." );
 		this.writeLine( Const.kShipLayout );
 	}
 	
-	public void fire( int x, int y, int z )
+	public void fire( Coordinate c )
 	{
 		/* Create request string */
-		String fireRequest = 	Integer.toString( x ) + "," + 
-								Integer.toString( y ) + "," + 
-								Integer.toString( z ) + 
-								Const.kLineSeparator;
+		String fireRequest = 	Integer.toString( c.getX() ) + "," + 
+								Integer.toString( c.getY() ) + "," + 
+								Integer.toString( c.getZ() );
 		
 		/* Send the fire request */
-		this.writeLine( fireRequest );
+		this.writeLine( fireRequest + Const.kLineSeparator );
+        Log.WriteLog( "Firing on: " + fireRequest );
 	}
 	
 	public boolean close() throws IOException

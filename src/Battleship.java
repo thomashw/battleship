@@ -11,7 +11,7 @@ public class Battleship {
 
     public Battleship()
     {
-        Log.WriteLog( "Connecting to Pason server." );
+        Log.WriteLog( "Initializing PasonComm object." );
         this.pComm = new PasonComm();
         
         Log.WriteLog( "Initializing Attack object." );
@@ -32,7 +32,7 @@ public class Battleship {
 
         /* Log the connection banner */
         try {
-            Log.WriteLog(bShip.pComm.readLine());
+            Log.WriteLog( "Connection banner: " + bShip.pComm.readLine() );
         } catch( IOException e ) {
             System.err.println( e );
         }
@@ -42,7 +42,7 @@ public class Battleship {
 
         /* Print the login response */
         try {
-            Log.WriteLog(bShip.pComm.readLine());
+            Log.WriteLog( "Login response: " + bShip.pComm.readLine() );
         } catch( IOException e ) {
             System.err.println( e );
         }
@@ -52,16 +52,16 @@ public class Battleship {
 
         /* Print ship layout response */
         try {
-            Log.WriteLog(bShip.pComm.readLine());
+            Log.WriteLog( "Ship layout response: " + bShip.pComm.readLine());
         } catch( IOException e ) {
             System.err.println( e );
         }
 
         /* Fire on the enemy */
-        bShip.pComm.fire(0,0,0);
+        bShip.pComm.fire( bShip.attack.generateAttack() );
 
         try {
-            Log.WriteLog(bShip.pComm.readLine());
+            Log.WriteLog( bShip.pComm.readLine() );
         } catch( IOException e ) {
             System.err.println( e );
         }

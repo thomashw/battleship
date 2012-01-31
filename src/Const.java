@@ -37,4 +37,6 @@ public class Const {
     public static final int kGameDimensionX = 10;
     public static final int kGameDimensionY = 10;
     public static final int kGameDimensionZ = 10;
+    public static final int kMaxCoord = 9;
+    public static final int kMinCoord = 0;
 }
