@@ -11,10 +11,12 @@ public class Battleship {
     public Battleship()
     {
         this.pComm = new PasonComm();
+        Log.WriteLog( "Connecting to Pason server." );
     }
     
     public static void main( String[] args )
     {
+        Log.WriteLog( "\nStarting new game." );
         Battleship bShip = new Battleship();
         
         /* Connect to the game server */
