@@ -100,6 +100,9 @@ public class Attack {
                         /* Add probability of hitting the SSK */
                         shipProbability[x][y][z] += probabilitySSK( x, y, z );
 
+                        /* Add probability of hitting the DDH */
+                        shipProbability[x][y][z] += probabilityDDH( x, y, z );
+
                         /* Update the best coordinate */
                         if( shipProbability[x][y][z] > currentBestAttack ) {
                             currentBestAttack = shipProbability[x][y][z];
@@ -110,6 +113,180 @@ public class Attack {
                         }
                     }
                 }
+    }
+    
+    private int probabilityDDH( int x, int y, int z )
+    {
+        /* Assume probability is 0 */
+        int probability = 0;
+
+        /* Calculate how many ways DDH could fit around this square .           */
+        /* 15 possibilities (I believe).                                        */
+
+
+        /*************/
+        /* x-y plane */
+        /*************/
+
+        /* The cell is a top cell in the x-y plane. It has 2 cells in the       */
+        /* -x direction forming 3 straight cells. There's two cells in the      */
+        /* y-plane beside its middle cell forming the +.                        */
+        if( x > 1 && y > 0 && y < (shipProbability[x].length - 1) )
+            if(     arena[x-1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y+1][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is a bottom cell in the x-y plane. It has 2 cells in the    */
+        /* +x direction forming 3 straight cells. There's two cells in the      */
+        /* y-plane beside its middle cell forming the +.                        */
+        if( x < (shipProbability.length - 2) && y > 0 && y < (shipProbability[x].length - 1) )
+            if(     arena[x+1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y+1][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is a left cell in the x-y plane. There's 2 cells in the     */
+        /* +y direction forming 3 straight cells. There's two cells in the      */
+        /* x-plane beside the middle cell forming the +.                        */
+        if( y < (shipProbability[x].length - 2) && x > 0 && x < (shipProbability.length - 1) )
+            if(     arena[x][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y+1][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is a right cell in the x-y plane. There's 2 cells in the    */
+        /* -y direction forming 3 straight ells. There's two cells in the       */
+        /* x-plane beside the middle cell forming the +.                        */
+        if( y > 1 && x > 0 && x < (shipProbability.length-1) )
+            if(     arena[x][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-2][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y-1][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is a middle cell in the x-y plane. There's 1 cell in the +y */
+        /* direction, 1 cell in the -y direction, 1 cell in the +x direction, & */
+        /* 1 cell in the -x direction.                                          */
+        if( y < (shipProbability[x].length - 1) && y > 0 && x < (shipProbability.length - 1) && x > 0 )
+            if(     arena[x][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /*************/
+        /* x-z plane */
+        /*************/
+
+        /* The cell is a top cell in the x-z plane. It has 2 cells in the       */
+        /* -x direction forming 3 straight cells. There's two cells in the      */
+        /* z-plane beside its middle cell forming the +.                        */
+        if( x > 1 && z > 0 && z < (shipProbability[x][y].length - 1) )
+            if(     arena[x-1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z+1] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is a bottom cell in the x-z plane. It has 2 cells in the    */
+        /* +x direction forming 3 straight cells. There's two cells in the      */
+        /* z-plane beside its middle cell forming the +.                        */
+        if( x < (shipProbability.length - 2) && z > 0 && z < (shipProbability[x][y].length - 1) )
+            if(     arena[x+1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z+1] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is a left cell in the x-z plane. There's 2 cells in the     */
+        /* +z direction forming 3 straight cells. There's two cells in the      */
+        /* x-plane beside the middle cell forming the +.                        */
+        if( z < (shipProbability[x][y].length - 2) && x > 0 && x < (shipProbability.length - 1) )
+            if(     arena[x][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z+1] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is a right cell in the x-z plane. There's 2 cells in the    */
+        /* -z direction forming 3 straight ells. There's two cells in the       */
+        /* x-plane beside the middle cell forming the +.                        */
+        if( z > 1 && x > 0 && x < (shipProbability.length-1) )
+            if(     arena[x][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z-1] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is a middle cell in the x-z plane. There's 1 cell in the +z */
+        /* direction, 1 cell in the -z direction, 1 cell in the +x direction, & */
+        /* 1 cell in the -x direction.                                          */
+        if( z < (shipProbability[x][y].length - 1) && z > 0 && x < (shipProbability.length - 1) && x > 0 )
+            if(     arena[x][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /*************/
+        /* y-z plane */
+        /*************/
+
+        /* The cell is a top cell in the y-z plane. It has 2 cells in the       */
+        /* -y direction forming 3 straight cells. There's two cells in the      */
+        /* z-plane beside its middle cell forming the +.                        */
+        if( y > 1 && z > 0 && z < (shipProbability[x][y].length - 1) )
+            if(     arena[x][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-2][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z+1] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is a bottom cell in the y-z plane. It has 2 cells in the    */
+        /* +y direction forming 3 straight cells. There's two cells in the      */
+        /* z-plane beside its middle cell forming the +.                        */
+        if( y < (shipProbability[x].length - 2) && z > 0 && z < (shipProbability[x][y].length - 1) )
+            if(     arena[x][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+1][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y+1][z+1] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is a left cell in the y-z plane. There's 2 cells in the     */
+        /* +z direction forming 3 straight cells. There's two cells in the      */
+        /* y-plane beside the middle cell forming the +.                        */
+        if( z < (shipProbability[x][y].length - 2) && y > 0 && y < (shipProbability[x].length - 1) )
+            if(     arena[x][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y+1][z+1] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is a right cell in the y-z plane. There's 2 cells in the    */
+        /* -z direction forming 3 straight ells. There's two cells in the       */
+        /* y-plane beside the middle cell forming the +.                        */
+        if( z > 1 && y > 0 && y < (shipProbability[x].length-1) )
+            if(     arena[x][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y+1][z-1] == AttackResponse.UNKNOWN )
+                probability++;
+
+        /* The cell is a middle cell in the y-z plane. There's 1 cell in the +z */
+        /* direction, 1 cell in the -z direction, 1 cell in the +y direction, & */
+        /* 1 cell in the -y direction.                                          */
+        if( z < (shipProbability[x][y].length - 1) && z > 0 && y < (shipProbability[x].length - 1) && y > 0 )
+            if(     arena[x][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z] == AttackResponse.UNKNOWN )
+                probability++;
+
+        return probability;
     }
     
     private int probabilitySSK( int x, int y, int z )
