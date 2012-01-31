@@ -40,8 +40,8 @@ public class Const {
     public static final int kMaxCoord = 9;
     public static final int kMinCoord = 0;
     
-    public static final String kAttackResponseHit = "HIT";
-    public static final String kAttackResponseMiss = "MISS";
+    public static final String kAttackResponseStrHit = "HIT";
+    public static final String kAttackResponseStrMiss = "MISS";
     
     public static final String kGameOverLose = "LOSE";
     public static final String kGameOverWin = "WIN";

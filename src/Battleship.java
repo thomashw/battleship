@@ -65,10 +65,13 @@ public class Battleship {
             Coordinate attackCoordinate = bShip.attack.generateAttack();
             bShip.pComm.fire( attackCoordinate );
 
+            /* Increment the current turn */
+            bShip.attack.incrementTurn();
+
             /* Process the response (HIT/MISS) */
             try {
                 attackResponse = bShip.pComm.readLine();
-                Log.WriteLog( "Attack response: " + attackResponse );
+                Log.WriteLog( "Turn " + bShip.attack.getCurrentTurn() + " attack response: " + attackResponse );
                 bShip.attack.processAttackResponse(attackResponse, attackCoordinate);
             } catch( IOException e ) {
                 System.err.println( e );

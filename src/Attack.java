@@ -6,6 +6,9 @@
 import java.util.*;
 
 public class Attack {
+    /* Tracks what turn we're on */
+    private static int currentTurn;
+        
     /* Holds HIT, MISS, or UNKNOWN info on all squares of the arena */
     AttackResponse[][][] arena;
 
@@ -14,6 +17,9 @@ public class Attack {
 
     public Attack()
     {
+        /* Initialize to 1 for first turn */
+        this.currentTurn = 1;
+
         /* Create array of size of the game */
         arena = new AttackResponse[Const.kGameDimensionX][Const.kGameDimensionY][Const.kGameDimensionZ];
 
@@ -25,6 +31,16 @@ public class Attack {
 
         /* Initialize Random object used to randomly choose firing points */
         rand = new Random();
+    }
+
+    public void incrementTurn()
+    {
+        this.currentTurn++;
+    }
+    
+    public int getCurrentTurn()
+    {
+        return this.currentTurn;
     }
 
     public Coordinate generateAttack()
@@ -40,9 +56,9 @@ public class Attack {
     {
         /* Check whether the response contains HIT or MISS */
         /* and update 'arena' */
-         if( response.contains( Const.kAttackResponseHit ) ) {
+         if( response.contains( Const.kAttackResponseStrHit ) ) {
              arena[c.getX()][c.getY()][c.getZ()] = AttackResponse.HIT;
-         } else if( response.contains( Const.kAttackResponseMiss ) ) {
+         } else if( response.contains( Const.kAttackResponseStrMiss ) ) {
              arena[c.getX()][c.getY()][c.getZ()] = AttackResponse.MISS;
          }
         
