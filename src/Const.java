@@ -21,6 +21,13 @@ public class Const {
 	
 	/* Login string for login request */
 	public static final String kLoginRequest = kTeamName + "|" + kGamePassword + kLineSeparator;
+    
+    /* Ship names */
+    public static final String kShipNameFF = "FF";
+    public static final String kShipNameSSK = "SSK";
+    public static final String kShipNameDDH = "DDH";
+    public static final String kShipNameBB = "BB";
+    public static final String kShipNameCVL = "CVL";
 	
 	/* Ship layout */
 	public static final String kLayoutFF = "9,0,0;9,0,1;9,0,2";
@@ -33,16 +40,19 @@ public class Const {
 												"DDH:" + kLayoutDDH + "|" + 
 												"BB:" + kLayoutBB + "|" + 
 												"CVL:" + kLayoutCVL + kLineSeparator;
-    
+
+    /* Game dimensions */
     public static final int kGameDimensionX = 10;
     public static final int kGameDimensionY = 10;
     public static final int kGameDimensionZ = 10;
     public static final int kMaxCoord = 9;
     public static final int kMinCoord = 0;
-    
+
+    /* Attack responses */
     public static final String kAttackResponseStrHit = "HIT";
     public static final String kAttackResponseStrMiss = "MISS";
-    
+
+    /* Match responses */
     public static final String kGameOverLose = "LOSE";
     public static final String kGameOverWin = "WIN";
     

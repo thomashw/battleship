@@ -53,9 +53,9 @@ public class PasonComm {
 	public void fire( Coordinate c )
 	{
 		/* Create request string */
-		String fireRequest = 	Integer.toString( c.getX() ) + "," + 
-								Integer.toString( c.getY() ) + "," + 
-								Integer.toString( c.getZ() );
+		String fireRequest = 	Integer.toString( c.x ) + "," +
+								Integer.toString( c.y ) + "," +
+								Integer.toString( c.z );
 		
 		/* Send the fire request */
 		this.writeLine( fireRequest + Const.kLineSeparator );

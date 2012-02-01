@@ -27,13 +27,16 @@ public class Attack {
 
     /* Each index indicates the probability of a ship being at that index in the arena while in search mode */
     int[][][] shipSearchProbability;
-    
+
     /* Each index indicates the probability of a ship being at that index in the arena while in sink mode */
     int[][][] shipSinkProbability;
 
     /* Holds the coordinate with the current highest probability of holding a ship */
     int currentBestAttack;
     Coordinate bestAttackCoordinate;
+
+    /* Holds the alive/dead status of the enemies ships */
+    EnemyShips enemyShips;
 
     /* Used to randomly fire on opponent */
     Random rand;
@@ -45,6 +48,9 @@ public class Attack {
 
         /* Begin by searching for ships */
         attackMode = AttackMode.AttackModeSearch;
+
+        /* Track the enemies ships */
+        enemyShips = new EnemyShips();
 
         /* Is used while in AttackModeSink to continue finding the ship. Emptied after each ship is sunk. */
         numHits = 0;
@@ -131,17 +137,25 @@ public class Attack {
                         continue;
                     } else {
 
-                        /* Add probability of hitting the FF */
-                        shipSearchProbability[x][y][z] += Probability.probabilityFF( x, y, z, arena );
+                        /* Add probability of hitting the FF if it's not already sunk */
+                        if( enemyShips.FF == EnemyShips.ShipStatus.ShipStatusAlive ) {
+                            shipSearchProbability[x][y][z] += Probability.probabilityFF( x, y, z, arena );
+                        }
 
-                        /* Add probability of hitting the SSK */
-                        shipSearchProbability[x][y][z] += Probability.probabilitySSK( x, y, z, arena );
+                        /* Add probability of hitting the SSK if it's not already sunk */
+                        if( enemyShips.SSK == EnemyShips.ShipStatus.ShipStatusAlive ) {
+                            shipSearchProbability[x][y][z] += Probability.probabilitySSK( x, y, z, arena );
+                        }
 
-                        /* Add probability of hitting the DDH */
-                        shipSearchProbability[x][y][z] += Probability.probabilityDDH( x, y, z, arena );
+                        /* Add probability of hitting the DDH if it's not already sunk */
+                        if( enemyShips.DDH == EnemyShips.ShipStatus.ShipStatusAlive ) {
+                            shipSearchProbability[x][y][z] += Probability.probabilityDDH( x, y, z, arena );
+                        }
 
-                        /* Add probability of hitting the BB */
-                        shipSearchProbability[x][y][z] += Probability.probabilityBB( x, y, z, arena );
+                        /* Add probability of hitting the BB if it's not already sunk */
+                        if( enemyShips.BB == EnemyShips.ShipStatus.ShipStatusAlive ) {
+                            shipSearchProbability[x][y][z] += Probability.probabilityBB( x, y, z, arena );
+                        }
 
                         /* Update the best coordinate */
                         if( shipSearchProbability[x][y][z] > currentBestAttack ) {
@@ -160,41 +174,67 @@ public class Attack {
         currentBestAttack = 0;
         int x, y, z;
 
+        /* Clear the sink array of probabilities */
+        emptySinkArray();
+
         /* Loop through all the hits and calculate the next best cell to fire at */
         for( int i = 0; i < numHits; i++ ) {
-            for( int j = 0; j < 6; j++ ) {
 
-                /* Get the hit coordinates */
-                x = hitCoordinates[i].x;
-                y = hitCoordinates[i].y;
-                z = hitCoordinates[i].z;
+            /* Get the hit coordinates */
+            x = hitCoordinates[i].x;
+            y = hitCoordinates[i].y;
+            z = hitCoordinates[i].z;
 
-                /* Now we want to test all the cells around this hit to see which has the highest probability   */
-                /* of containing a ship.                                                                        */
+            /* Now we want to test all the cells around this hit to see which has the highest probability   */
+            /* of containing a ship.                                                                        */
 
-                shipSearchProbability[x][y][z] = 0;
+            shipSinkProbability[x][y][z] = 0;
 
-                /* Add probability of hitting the FF */
-                shipSearchProbability[x][y][z] += Probability.probabilityFF( x, y, z, arena );
-
-                /* Add probability of hitting the SSK */
-                shipSearchProbability[x][y][z] += Probability.probabilitySSK( x, y, z, arena );
-
-                /* Add probability of hitting the DDH */
-                shipSearchProbability[x][y][z] += Probability.probabilityDDH( x, y, z, arena );
-
-                /* Add probability of hitting the BB */
-                shipSearchProbability[x][y][z] += Probability.probabilityBB( x, y, z, arena );
-
-                /* Update the best coordinate */
-                if( shipSearchProbability[x][y][z] > currentBestAttack ) {
-                    currentBestAttack = shipSearchProbability[x][y][z];
-
-                    bestAttackCoordinate.x = x;
-                    bestAttackCoordinate.y = y;
-                    bestAttackCoordinate.z = z;
-                }
+            /* Find probability of hitting the FF again if it's not already sunk */
+            if( enemyShips.FF == EnemyShips.ShipStatus.ShipStatusAlive ) {
+                Probability.probabilityFF( x, y, z, arena, shipSinkProbability );
             }
+
+            /* Find probability of hitting the SSK again if it's not already sunk*/
+            if( enemyShips.SSK == EnemyShips.ShipStatus.ShipStatusAlive ) {
+                Probability.probabilitySSK( x, y, z, arena, shipSinkProbability );
+            }
+
+            /* Find probability of hitting the DDH again if it's not already sunk*/
+            if( enemyShips.DDH == EnemyShips.ShipStatus.ShipStatusAlive ) {
+                Probability.probabilityDDH( x, y, z, arena, shipSinkProbability );
+            }
+
+            /* Find probability of hitting the BB again if it's not already sunk*/
+            if( enemyShips.BB == EnemyShips.ShipStatus.ShipStatusAlive ) {
+                Probability.probabilityBB( x, y, z, arena, shipSinkProbability );
+            }
+        }
+
+        /* The array now contains the probabilities of a ship being at points   */
+        /* surrounding the hits. Let's find the highest probability and use it   */
+        /* for the next fire request.                                           */
+
+        for( int i = 0; i < shipSinkProbability.length; i++ )
+            for( int j = 0; j < shipSinkProbability[i].length; j++ )
+                for( int k = 0; k < shipSinkProbability[i][j].length; k++ ) {
+                    if( shipSinkProbability[i][j][k] > currentBestAttack ) {
+                        currentBestAttack = shipSinkProbability[i][j][k];
+
+                        bestAttackCoordinate.x = i;
+                        bestAttackCoordinate.y = j;
+                        bestAttackCoordinate.z = k;
+                    }
+                }
+
+        /* If for some reason the program didn't find a good attack, just put it back into search mode  */
+        /* to avoid falling into an infinite loop of crappy shots.                                      */
+        if( currentBestAttack == 0 ) {
+            /* Will stop us from using old values in the hitCoordinate array upon the next hit */
+            numHits = 0;
+
+            /* Start searching for a new ship */
+            attackMode = AttackMode.AttackModeSearch;
         }
     }
 
@@ -202,7 +242,16 @@ public class Attack {
     {
         /* Check whether the response contains HIT or MISS */
         /* and update 'arena' */
-        if( response.contains( Const.kAttackResponseStrHit ) ) {
+        if( response.contains( Const.kAttackResponseStrHit ) && shipIsSunk( response ) ) {
+            /* Update the arena */
+            arena[c.x][c.y][c.z] = AttackResponse.HIT;
+
+            /* Will stop us from using old values in the hitCoordinate array upon the next hit */
+            numHits = 0;
+
+            /* Start searching for a new ship */
+            attackMode = AttackMode.AttackModeSearch;
+        } else if( response.contains( Const.kAttackResponseStrHit ) ) {
             /* Update the arena */
             arena[c.x][c.y][c.z] = AttackResponse.HIT;
 
@@ -218,5 +267,45 @@ public class Attack {
         }
 
         Log.WriteLog( "Result: " + arena[c.x][c.y][c.z] );
+    }
+
+    private boolean shipIsSunk( String response )
+    {
+        /* Assume false */
+        boolean sunk = false;
+
+        /* If we've sunk any ship, we will want to switch back to "search" mode */
+        /* and clear the hitCoordinate array as it's only used while sinking    */
+        /* a ship.                                                              */
+        if( response.contains( Const.kShipNameFF ) ) {
+            enemyShips.FF = EnemyShips.ShipStatus.ShipStatusSunk;
+            sunk = true;
+        } else if( response.contains( Const.kShipNameBB ) ) {
+            enemyShips.BB = EnemyShips.ShipStatus.ShipStatusSunk;
+            sunk = true;
+        } else if( response.contains( Const.kShipNameCVL ) ) {
+            enemyShips.CVL = EnemyShips.ShipStatus.ShipStatusSunk;
+            sunk = true;
+        } else if( response.contains( Const.kShipNameDDH ) ) {
+            enemyShips.DDH = EnemyShips.ShipStatus.ShipStatusSunk;
+            sunk = true;
+        } else if( response.contains( Const.kShipNameSSK ) ) {
+            enemyShips.SSK = EnemyShips.ShipStatus.ShipStatusSunk;
+            sunk = true;
+        }
+
+        if( sunk == true ) {
+
+        }
+
+        return sunk;
+    }
+
+    private void emptySinkArray()
+    {
+        for( int i = 0; i < shipSinkProbability.length; i++ )
+            for( int j = 0; j < shipSinkProbability[i].length; j++ )
+                for( int k = 0; k < shipSinkProbability[i][j].length; k++ )
+                    shipSinkProbability[i][j][k] = 0;
     }
 }
