@@ -695,7 +695,7 @@ public class Probability {
 
         return probability;
     }
-    
+
     public static int probabilityFF( int x, int y, int z, AttackResponse[][][] arena )
     {
         return probabilityFF( x, y, z, arena, new int[Const.kGameDimensionX][Const.kGameDimensionY][Const.kGameDimensionZ] );
@@ -777,6 +777,280 @@ public class Probability {
                 shipSinkProb[x][y][z+1]++;
                 shipSinkProb[x][y][z-1]++;
                 searchProbability++;
+            }
+
+        return searchProbability;
+    }
+
+    public static int probabilityCVL( int x, int y, int z, AttackResponse[][][] arena )
+    {
+        return probabilityCVL( x, y, z, arena, new int[Const.kGameDimensionX][Const.kGameDimensionY][Const.kGameDimensionZ] );
+    }
+
+    public static int probabilityCVL( int x, int y, int z, AttackResponse[][][] arena, int[][][] shipSinkProb )
+    {
+        /* Assume probability is 0 */
+        int searchProbability = 0;
+
+        /* Since CVL is symmetrical, I don't have to account for all the axes!      */
+        /* Therefore, there should be 13 different possibilities.                   */
+
+        /* The cell is the very bottom cell in the z-x plane. The y-axis is coming  */
+        /* out of the page. Need -2y, +2y, +4z, +2x, -2x to fit this shape.         */
+        if( z < (arena[x][y].length - 4) && y > 1 && y < (arena[x].length - 2) && x > 1 && x < (arena.length - 2) )
+            if(     arena[x][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z+3] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z+4] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x][y+1][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x][y+2][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x][y-2][z+2] == AttackResponse.UNKNOWN ) {
+                searchProbability++;
+                shipSinkProb[x][y][z+1]++;
+            }
+
+        /* The cell is 1 above the very bottom cell in the z-x plane.   */
+        /* Need -1z, +3z, +2x, -2x, +2y, -2y to fit this shape.         */
+        if( z > 0 && z < (arena[x][y].length - 3) && y > 1 && y < (arena[x].length - 2) && x > 1 && x < (arena.length - 2) )
+            if(     arena[x][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z+3] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y+1][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y+2][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y-2][z+1] == AttackResponse.UNKNOWN ) {
+                searchProbability++;
+                shipSinkProb[x][y][z-1]++;
+                shipSinkProb[x][y][z+1]++;
+            }
+
+        /* The cell is in the very middle.                              */
+        /* Need +2z, -2z, +2x, -2x, +2y, -2y to fit this shape.         */
+        if( z > 1 && z < (arena[x][y].length - 2) && y > 1 && y < (arena[x].length - 2) && x > 1 && x < (arena.length - 2) )
+            if(     arena[x][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-2][z] == AttackResponse.UNKNOWN ) {
+                searchProbability++;
+                shipSinkProb[x][y][z+1]++;
+                shipSinkProb[x][y][z-1]++;
+                shipSinkProb[x+1][y][z]++;
+                shipSinkProb[x-1][y][z]++;
+                shipSinkProb[x][y+1][z]++;
+                shipSinkProb[x][y-1][z]++;
+            }
+
+        /* The cell is one above the middle.                            */
+        /* Need +1z, -3z, +2y, -2y, +2x, -2x to fit this shape.         */
+        if( z > 2 && z < (arena[x][y].length - 1) && y > 1 && y < (arena[x].length - 2) && x > 1 && x < (arena.length - 2) )
+            if(     arena[x][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-3] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y+1][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y+2][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y-2][z-1] == AttackResponse.UNKNOWN ) {
+                searchProbability++;
+                shipSinkProb[x][y][z+1]++;
+                shipSinkProb[x][y][z-1]++;
+            }
+
+        /* The cell is at the very top.                                 */
+        /* Need -4z, +2y, -2y, +2x, -2x to fit this shape.              */
+        if( z > 3 && y > 1 && y < (arena[x].length - 2) && x > 1 && x < (arena.length - 2) )
+            if(     arena[x][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-3] == AttackResponse.UNKNOWN &&
+                    arena[x][y][z-4] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x][y+1][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x][y+2][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x][y-2][z-2] == AttackResponse.UNKNOWN ) {
+                searchProbability++;
+                shipSinkProb[x][y][z-1]++;
+            }
+
+        /* The cell is 1 space to the left (-x) of the middle on the x-axis.    */
+        /* Need -1x, +3x, -2z, +2z, -2y, +2y.                                   */
+        if( z > 1 && z < (arena[x][y].length - 2) && y > 1 && y < (arena[x].length - 2) && x > 0 && x < (arena.length - 3) )
+            if(     arena[x-1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+3][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y-2][z] == AttackResponse.UNKNOWN ) {
+                searchProbability++;
+                shipSinkProb[x-1][y][z]++;
+                shipSinkProb[x+1][y][z]++;
+            }
+
+        /* The cell is 2 spaces to the left (-x) of the middle.                 */
+        /* Need +4x, -2z, +2z, -2y, +2y.                                        */
+        if( z > 1 && z < (arena[x][y].length - 2) && y > 1 && y < (arena[x].length - 2) && x < (arena.length - 4) )
+            if(     arena[x+1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+3][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+4][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y-2][z] == AttackResponse.UNKNOWN ) {
+                searchProbability++;
+                shipSinkProb[x+1][y][z]++;
+            }
+
+        /* The cell is 1 space to the right (+x) of the middle.                 */
+        /* Need -3x, +1x, -2z, +2z, -2y, +2y.                                   */
+        if( z > 1 && z < (arena[x][y].length - 2) && y > 1 && y < (arena[x].length - 2) && x > 2 && x < (arena.length - 1) )
+            if(     arena[x+1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-3][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y-2][z] == AttackResponse.UNKNOWN ) {
+                searchProbability++;
+                shipSinkProb[x+1][y][z]++;
+                shipSinkProb[x-1][y][z]++;
+            }
+
+        /* The cell is 2 spaces to the right (+x) of the middle.                */
+        /* Need -4x, -2z, +2z, -2y, +2y.                                        */
+        if( z > 1 && z < (arena[x][y].length - 2) && y > 1 && y < (arena[x].length - 2) && x > 3 )
+            if(     arena[x-1][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-3][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-4][y][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y-2][z] == AttackResponse.UNKNOWN ) {
+                searchProbability++;
+                shipSinkProb[x-1][y][z]++;
+            }
+
+        /* The cell is 1 space forward (+y) of the middle.                     */
+        /* Need +1y, -3y, -2z, +2z, -2x, +2x.                                  */
+        if( z > 1 && z < (arena[x][y].length - 2) && y > 2 && y < (arena[x].length - 1) && x > 1 && x < (arena.length - 2) )
+            if(     arena[x][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-2][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-3][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y-1][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y-1][z] == AttackResponse.UNKNOWN ) {
+                searchProbability++;
+                shipSinkProb[x][y+1][z]++;
+                shipSinkProb[x][y-1][z]++;
+            }
+
+        /* The cell is 2 spaces forward (+y) of the middle.                     */
+        /* Need -4y, -2z, +2z, -2x, +2x.                                        */
+        if( z > 1 && z < (arena[x][y].length - 2) && y > 3 && x > 1 && x < (arena.length - 2) )
+            if(     arena[x][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-2][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-3][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-4][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y-2][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y-2][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x][y-2][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y-2][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y-2][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y-2][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y-2][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y-2][z] == AttackResponse.UNKNOWN ) {
+                searchProbability++;
+                shipSinkProb[x][y-1][z]++;
+            }
+
+        /* The cell is 1 space back (-y) of the middle.                         */
+        /* Need -1y, +3y, -2z, +2z, -2x, +2x.                                   */
+        if( z > 1 && z < (arena[x][y].length - 2) && y > 0 && y < (arena[x].length - 3) && x > 1 && x < (arena.length - 2) )
+            if(     arena[x][y-1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+3][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+1][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y+1][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x][y+1][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y+1][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y+1][z] == AttackResponse.UNKNOWN ) {
+                searchProbability++;
+                shipSinkProb[x][y-1][z]++;
+                shipSinkProb[x][y+1][z]++;
+            }
+
+        /* The cell is 2 spaces back (-y) of the middle.                        */
+        /* Need +4y, -2z, +2z, -2x, +2x.                                        */
+        if( z > 1 && z < (arena[x][y].length - 2) && y < (arena[x].length - 4) && x > 1 && x < (arena.length - 2) )
+            if(     arena[x][y+1][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+3][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+4][z] == AttackResponse.UNKNOWN &&
+                    arena[x][y+2][z+1] == AttackResponse.UNKNOWN &&
+                    arena[x][y+2][z+2] == AttackResponse.UNKNOWN &&
+                    arena[x][y+2][z-1] == AttackResponse.UNKNOWN &&
+                    arena[x][y+2][z-2] == AttackResponse.UNKNOWN &&
+                    arena[x+1][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x+2][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x-1][y+2][z] == AttackResponse.UNKNOWN &&
+                    arena[x-2][y+2][z] == AttackResponse.UNKNOWN ) {
+                searchProbability++;
+                shipSinkProb[x][y+1][z]++;
             }
 
         return searchProbability;

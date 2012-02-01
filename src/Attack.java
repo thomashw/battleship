@@ -157,6 +157,11 @@ public class Attack {
                             shipSearchProbability[x][y][z] += Probability.probabilityBB( x, y, z, arena );
                         }
 
+                        /* Add probability of hitting the BB if it's not already sunk */
+                        if( enemyShips.CVL == EnemyShips.ShipStatus.ShipStatusAlive ) {
+                            shipSearchProbability[x][y][z] += Probability.probabilityCVL( x, y, z, arena );
+                        }
+
                         /* Update the best coordinate */
                         if( shipSearchProbability[x][y][z] > currentBestAttack ) {
                             currentBestAttack = shipSearchProbability[x][y][z];
@@ -195,19 +200,24 @@ public class Attack {
                 Probability.probabilityFF( x, y, z, arena, shipSinkProbability );
             }
 
-            /* Find probability of hitting the SSK again if it's not already sunk*/
+            /* Find probability of hitting the SSK again if it's not already sunk */
             if( enemyShips.SSK == EnemyShips.ShipStatus.ShipStatusAlive ) {
                 Probability.probabilitySSK( x, y, z, arena, shipSinkProbability );
             }
 
-            /* Find probability of hitting the DDH again if it's not already sunk*/
+            /* Find probability of hitting the DDH again if it's not already sunk */
             if( enemyShips.DDH == EnemyShips.ShipStatus.ShipStatusAlive ) {
                 Probability.probabilityDDH( x, y, z, arena, shipSinkProbability );
             }
 
-            /* Find probability of hitting the BB again if it's not already sunk*/
+            /* Find probability of hitting the BB again if it's not already sunk */
             if( enemyShips.BB == EnemyShips.ShipStatus.ShipStatusAlive ) {
                 Probability.probabilityBB( x, y, z, arena, shipSinkProbability );
+            }
+
+            /* Find probability of hitting the CVL again if it's not already sunk */
+            if( enemyShips.CVL == EnemyShips.ShipStatus.ShipStatusAlive ) {
+                Probability.probabilityCVL( x, y, z, arena, shipSinkProbability );
             }
         }
 
@@ -271,34 +281,28 @@ public class Attack {
 
     private boolean shipIsSunk( String response )
     {
-        /* Assume false */
-        boolean sunk = false;
 
         /* If we've sunk any ship, we will want to switch back to "search" mode */
         /* and clear the hitCoordinate array as it's only used while sinking    */
         /* a ship.                                                              */
         if( response.contains( Const.kShipNameFF ) ) {
             enemyShips.FF = EnemyShips.ShipStatus.ShipStatusSunk;
-            sunk = true;
+            return true;
         } else if( response.contains( Const.kShipNameBB ) ) {
             enemyShips.BB = EnemyShips.ShipStatus.ShipStatusSunk;
-            sunk = true;
+            return true;
         } else if( response.contains( Const.kShipNameCVL ) ) {
             enemyShips.CVL = EnemyShips.ShipStatus.ShipStatusSunk;
-            sunk = true;
+            return true;
         } else if( response.contains( Const.kShipNameDDH ) ) {
             enemyShips.DDH = EnemyShips.ShipStatus.ShipStatusSunk;
-            sunk = true;
+            return true;
         } else if( response.contains( Const.kShipNameSSK ) ) {
             enemyShips.SSK = EnemyShips.ShipStatus.ShipStatusSunk;
-            sunk = true;
+            return true;
         }
 
-        if( sunk == true ) {
-
-        }
-
-        return sunk;
+        return false;
     }
 
     private void emptySinkArray()
