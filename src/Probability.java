@@ -824,7 +824,12 @@ public class Probability {
                     arena[x+2][y][z] != AttackResponse.MISS &&
                     arena[x+3][y][z] != AttackResponse.MISS &&
                     arena[x+4][y][z] != AttackResponse.MISS ) {
-                probability++;
+                if(     arena[x+1][y][z] == AttackResponse.UNKNOWN &&
+                        arena[x+2][y][z] == AttackResponse.UNKNOWN &&
+                        arena[x+3][y][z] == AttackResponse.UNKNOWN &&
+                        arena[x+4][y][z] == AttackResponse.UNKNOWN )
+                    probability++;
+                if( arena[x+1][y][z] == AttackResponse.UNKNOWN )
                 shipSinkProb[x+1][y][z]++;
             }
 
@@ -834,7 +839,12 @@ public class Probability {
                     arena[x-2][y][z] != AttackResponse.MISS &&
                     arena[x-3][y][z] != AttackResponse.MISS &&
                     arena[x-4][y][z] != AttackResponse.MISS ) {
-                probability++;
+                if(     arena[x-1][y][z] == AttackResponse.UNKNOWN &&
+                        arena[x-2][y][z] == AttackResponse.UNKNOWN &&
+                        arena[x-3][y][z] == AttackResponse.UNKNOWN &&
+                        arena[x-4][y][z] == AttackResponse.UNKNOWN )
+                    probability++;
+                if( arena[x-1][y][z] == AttackResponse.UNKNOWN )
                 shipSinkProb[x-1][y][z]++;
             }
 
@@ -844,7 +854,12 @@ public class Probability {
                     arena[x][y+2][z] != AttackResponse.MISS &&
                     arena[x][y+3][z] != AttackResponse.MISS &&
                     arena[x][y+4][z] != AttackResponse.MISS ) {
-                probability++;
+                if(     arena[x][y+1][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y+2][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y+3][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y+4][z] == AttackResponse.UNKNOWN )
+                    probability++;
+                if( arena[x][y+1][z] == AttackResponse.UNKNOWN )
                 shipSinkProb[x][y+1][z]++;
             }
 
@@ -854,7 +869,12 @@ public class Probability {
                     arena[x][y-2][z] != AttackResponse.MISS &&
                     arena[x][y-3][z] != AttackResponse.MISS &&
                     arena[x][y-4][z] != AttackResponse.MISS ) {
-                probability++;
+                if(     arena[x][y-1][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y-2][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y-3][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y-4][z] == AttackResponse.UNKNOWN )
+                    probability++;
+                if( arena[x][y-1][z] == AttackResponse.UNKNOWN )
                 shipSinkProb[x][y-1][z]++;
             }
 
@@ -864,7 +884,12 @@ public class Probability {
                     arena[x][y][z+2] != AttackResponse.MISS &&
                     arena[x][y][z+3] != AttackResponse.MISS &&
                     arena[x][y][z+4] != AttackResponse.MISS ) {
-                probability++;
+                if(     arena[x][y][z+1] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z+2] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z+3] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z+4] == AttackResponse.UNKNOWN )
+                    probability++;
+                if( arena[x][y][z+1] == AttackResponse.UNKNOWN )
                 shipSinkProb[x][y][z+1]++;
             }
 
@@ -874,7 +899,12 @@ public class Probability {
                     arena[x][y][z-2] != AttackResponse.MISS &&
                     arena[x][y][z-3] != AttackResponse.MISS &&
                     arena[x][y][z-4] != AttackResponse.MISS ) {
-                probability++;
+                if(     arena[x][y][z-1] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z-2] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z-3] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z-4] == AttackResponse.UNKNOWN )
+                    probability++;
+                if( arena[x][y][z-1] == AttackResponse.UNKNOWN )
                 shipSinkProb[x][y][z-1]++;
             }
 
@@ -888,8 +918,15 @@ public class Probability {
                     arena[x-1][y][z] != AttackResponse.MISS &&
                     arena[x-2][y][z] != AttackResponse.MISS &&
                     arena[x-3][y][z] != AttackResponse.MISS ) {
-                probability++;
+                if(     arena[x+1][y][z] == AttackResponse.UNKNOWN &&
+                        arena[x-1][y][z] == AttackResponse.UNKNOWN &&
+                        arena[x-2][y][z] == AttackResponse.UNKNOWN &&
+                        arena[x-3][y][z] == AttackResponse.UNKNOWN )
+                    probability++;
+                if( arena[x+1][y][z] == AttackResponse.UNKNOWN )
                 shipSinkProb[x+1][y][z]++;
+
+                if( arena[x-1][y][z] == AttackResponse.UNKNOWN )
                 shipSinkProb[x-1][y][z]++;
             }
 
@@ -899,8 +936,15 @@ public class Probability {
                     arena[x+2][y][z] != AttackResponse.MISS &&
                     arena[x+3][y][z] != AttackResponse.MISS &&
                     arena[x-1][y][z] != AttackResponse.MISS ) {
-                probability++;
+                if(     arena[x+1][y][z] == AttackResponse.UNKNOWN &&
+                        arena[x+2][y][z] == AttackResponse.UNKNOWN &&
+                        arena[x+3][y][z] == AttackResponse.UNKNOWN &&
+                        arena[x-1][y][z] == AttackResponse.UNKNOWN )
+                    probability++;
+                if( arena[x+1][y][z] == AttackResponse.UNKNOWN )
                 shipSinkProb[x+1][y][z]++;
+
+                if( arena[x-1][y][z] == AttackResponse.UNKNOWN )
                 shipSinkProb[x-1][y][z]++;
             }
 
@@ -910,8 +954,15 @@ public class Probability {
                     arena[x][y-1][z] != AttackResponse.MISS &&
                     arena[x][y-2][z] != AttackResponse.MISS &&
                     arena[x][y-3][z] != AttackResponse.MISS ) {
-                probability++;
+                if(     arena[x][y+1][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y-1][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y-2][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y-3][z] == AttackResponse.UNKNOWN )
+                    probability++;
+                if( arena[x][y+1][z] == AttackResponse.UNKNOWN )
                 shipSinkProb[x][y+1][z]++;
+
+                if( arena[x][y-1][z] == AttackResponse.UNKNOWN )
                 shipSinkProb[x][y-1][z]++;
             }
 
@@ -921,8 +972,15 @@ public class Probability {
                     arena[x][y+2][z] != AttackResponse.MISS &&
                     arena[x][y+3][z] != AttackResponse.MISS &&
                     arena[x][y-1][z] != AttackResponse.MISS ) {
-                probability++;
+                if(     arena[x][y+1][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y+2][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y+3][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y-1][z] == AttackResponse.UNKNOWN )
+                    probability++;
+                if( arena[x][y+1][z] == AttackResponse.UNKNOWN )
                 shipSinkProb[x][y+1][z]++;
+
+                if( arena[x][y-1][z] == AttackResponse.UNKNOWN )
                 shipSinkProb[x][y-1][z]++;
             }
 
@@ -932,8 +990,15 @@ public class Probability {
                     arena[x][y][z-1] != AttackResponse.MISS &&
                     arena[x][y][z-2] != AttackResponse.MISS &&
                     arena[x][y][z-3] != AttackResponse.MISS ) {
-                probability++;
+                if(     arena[x][y][z+1] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z-1] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z-2] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z-3] == AttackResponse.UNKNOWN )
+                    probability++;
+                if( arena[x][y][z+1] == AttackResponse.UNKNOWN )
                 shipSinkProb[x][y][z+1]++;
+
+                if( arena[x][y][z-1] == AttackResponse.UNKNOWN )
                 shipSinkProb[x][y][z-1]++;
             }
 
@@ -943,8 +1008,15 @@ public class Probability {
                     arena[x][y][z+2] != AttackResponse.MISS &&
                     arena[x][y][z+3] != AttackResponse.MISS &&
                     arena[x][y][z-1] != AttackResponse.MISS ) {
-                probability++;
+                if(     arena[x][y][z+1] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z+2] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z+3] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z-1] == AttackResponse.UNKNOWN )
+                    probability++;
+                if( arena[x][y][z+1] != AttackResponse.UNKNOWN )
                 shipSinkProb[x][y][z+1]++;
+
+                if( arena[x][y][z-1] != AttackResponse.UNKNOWN )
                 shipSinkProb[x][y][z-1]++;
             }
 
@@ -958,8 +1030,15 @@ public class Probability {
                     arena[x+2][y][z] != AttackResponse.MISS &&
                     arena[x-1][y][z] != AttackResponse.MISS &&
                     arena[x-2][y][z] != AttackResponse.MISS ) {
-                probability++;
+                if(     arena[x+1][y][z] == AttackResponse.UNKNOWN &&
+                        arena[x+2][y][z] == AttackResponse.UNKNOWN &&
+                        arena[x-1][y][z] == AttackResponse.UNKNOWN &&
+                        arena[x-2][y][z] == AttackResponse.UNKNOWN )
+                    probability++;
+                if( arena[x+1][y][z] == AttackResponse.UNKNOWN )
                 shipSinkProb[x+1][y][z]++;
+
+                if( arena[x-1][y][z] == AttackResponse.UNKNOWN )
                 shipSinkProb[x-1][y][z]++;
             }
 
@@ -969,8 +1048,16 @@ public class Probability {
                     arena[x][y+2][z] != AttackResponse.MISS &&
                     arena[x][y-1][z] != AttackResponse.MISS &&
                     arena[x][y-2][z] != AttackResponse.MISS ) {
-                probability++;
+                if(     arena[x][y+1][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y+2][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y-1][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y-2][z] == AttackResponse.UNKNOWN )
+                    probability++;
+
+                if( arena[x][y+1][z] == AttackResponse.UNKNOWN )
                 shipSinkProb[x][y+1][z]++;
+
+                if( arena[x][y-1][z] == AttackResponse.UNKNOWN )
                 shipSinkProb[x][y-1][z]++;
             }
 
@@ -980,8 +1067,16 @@ public class Probability {
                     arena[x][y][z+2] != AttackResponse.MISS &&
                     arena[x][y][z-1] != AttackResponse.MISS &&
                     arena[x][y][z-2] != AttackResponse.MISS ) {
-                probability++;
+                if(     arena[x][y][z+1] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z+2] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z-1] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z-2] == AttackResponse.UNKNOWN )
+                    probability++;
+
+                if( arena[x][y][z+1] == AttackResponse.UNKNOWN )
                 shipSinkProb[x][y][z+1]++;
+
+                if( arena[x][y][z-1] == AttackResponse.UNKNOWN )
                 shipSinkProb[x][y][z-1]++;
             }
 
