@@ -59,7 +59,9 @@ public class Const {
     public static final String kAttackResponseStrHit = "HIT";
     public static final String kAttackResponseStrMiss = "MISS";
 
-    /* Match responses */
-    public static final String kGameOverLose = "LOSE";
-    public static final String kGameOverWin = "WIN";
+    /* Match/game responses */
+    public static final String kMatch = "MATCH";
+    public static final String kGame = "GAME";
+    public static final String kLose = "LOSE";
+    public static final String kWin = "WIN";
 }
