@@ -239,13 +239,13 @@ public class Attack {
 
         /* If for some reason the program didn't find a good attack, just put it back into search mode  */
         /* to avoid falling into an infinite loop of crappy shots.                                      */
-        if( currentBestAttack == 0 ) {
+        //if( currentBestAttack == 0 ) {
             /* Will stop us from using old values in the hitCoordinate array upon the next hit */
-            numHits = 0;
+          //  numHits = 0;
 
             /* Start searching for a new ship */
-            attackMode = AttackMode.AttackModeSearch;
-        }
+            //attackMode = AttackMode.AttackModeSearch;
+        //}
     }
 
     public void processAttackResponse( String response, Coordinate c )
@@ -273,7 +273,8 @@ public class Attack {
 
         } else if( response.contains( Const.kAttackResponseStrMiss ) ) {
             /* Update the arena */
-            arena[c.x][c.y][c.z] = AttackResponse.MISS;
+            if( arena[c.x][c.y][c.z] == AttackResponse.UNKNOWN )
+                arena[c.x][c.y][c.z] = AttackResponse.MISS;
         }
 
         Log.WriteLog( "Result: " + arena[c.x][c.y][c.z] );
