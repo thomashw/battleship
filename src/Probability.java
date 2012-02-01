@@ -1105,40 +1105,58 @@ public class Probability {
         /* Check if 2 cells in the +x direction */
         if( x < (arena.length - 2) )
             if( arena[x+1][y][z] != AttackResponse.MISS && arena[x+2][y][z] != AttackResponse.MISS ) {
+                if( arena[x+1][y][z] == AttackResponse.UNKNOWN )
                 shipSinkProb[x+1][y][z]++;
+
+                if( arena[x+1][y][z] == AttackResponse.UNKNOWN && arena[x+2][y][z] == AttackResponse.UNKNOWN )
                 searchProbability++;
             }
 
         /* Check if 2 cells in the -x direction */
         if( x > 1 )
             if( arena[x-1][y][z] != AttackResponse.MISS && arena[x-2][y][z] != AttackResponse.MISS ) {
+                if( arena[x-1][y][z] == AttackResponse.UNKNOWN )
                 shipSinkProb[x-1][y][z]++;
+
+                if( arena[x-1][y][z] == AttackResponse.UNKNOWN && arena[x-2][y][z] == AttackResponse.UNKNOWN )
                 searchProbability++;
             }
         /* Check if 2 cells in the +y direction */
         if( y < (arena[x].length - 2) )
             if( arena[x][y+1][z] != AttackResponse.MISS && arena[x][y+2][z] != AttackResponse.MISS ) {
+                if( arena[x][y+1][z] == AttackResponse.UNKNOWN )
                 shipSinkProb[x][y+1][z]++;
+
+                if( arena[x][y+1][z] == AttackResponse.UNKNOWN && arena[x][y+2][z] == AttackResponse.UNKNOWN )
                 searchProbability++;
             }
         /* Check if 2 cells in the -y direction */
         if( y > 1 )
             if( arena[x][y-1][z] != AttackResponse.MISS && arena[x][y-2][z] != AttackResponse.MISS ) {
+                if( arena[x][y-1][z] == AttackResponse.UNKNOWN )
                 shipSinkProb[x][y-1][z]++;
+
+                if( arena[x][y-1][z] == AttackResponse.UNKNOWN && arena[x][y-2][z] == AttackResponse.UNKNOWN )
                 searchProbability++;
             }
 
         /* Check if 2 cells in the +z direction */
         if( z < (arena[x][y].length - 2) )
             if( arena[x][y][z+1] != AttackResponse.MISS && arena[x][y][z+2] != AttackResponse.MISS ) {
+                if( arena[x][y][z+1] == AttackResponse.UNKNOWN )
                 shipSinkProb[x][y][z+1]++;
+
+                if( arena[x][y][z+1] == AttackResponse.UNKNOWN && arena[x][y][z+2] == AttackResponse.UNKNOWN )
                 searchProbability++;
             }
 
         /* Check if 2 cells in the -z direction */
         if( z > 1 )
             if( arena[x][y][z-1] != AttackResponse.MISS && arena[x][y][z-2] != AttackResponse.MISS ) {
+                if( arena[x][y][z-1] == AttackResponse.UNKNOWN )
                 shipSinkProb[x][y][z-1]++;
+
+                if( arena[x][y][z-1] == AttackResponse.UNKNOWN && arena[x][y][z-2] == AttackResponse.UNKNOWN )
                 searchProbability++;
             }
 
@@ -1171,8 +1189,13 @@ public class Probability {
         /* Check if 1 cell +z & 1 cell -z */
         if( z < arena[x][y].length - 1 && z > 0 )
             if( arena[x][y][z+1] != AttackResponse.MISS && arena[x][y][z-1] != AttackResponse.MISS ) {
+                if( arena[x][y][z+1] == AttackResponse.UNKNOWN )
                 shipSinkProb[x][y][z+1]++;
+
+                if( arena[x][y][z-1] == AttackResponse.UNKNOWN )
                 shipSinkProb[x][y][z-1]++;
+
+                if( arena[x][y][z+1] == AttackResponse.UNKNOWN && arena[x][y][z-1] == AttackResponse.UNKNOWN )
                 searchProbability++;
             }
 
