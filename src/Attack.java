@@ -15,9 +15,8 @@ public class Attack {
     /* Once we hit a ship, we'll switch to sink until we've sunk it */
     AttackMode attackMode;
 
-    /* Holds an array of coordinates of the latest HITS while in AttackModeSink */
-    int numHits;
-    Coordinate[] hitCoordinates;
+    /* Holds an ArrayList of coordinates of the latest HITS while in AttackModeSink */
+    ArrayList hitCoordinates;
 
     /* If we've hit two ships, we don't know which hits were for which ships.   */
     /* But, once we sink a ship, we will know how many hits in the hit array    */
@@ -29,7 +28,7 @@ public class Attack {
     /* array that can be accounted for by sunk ships.                           */
     int sunkShipHits;
 
-/* Tracks what turn we're on */
+    /* Tracks what turn we're on */
     private static int currentTurn;
 
     /* Holds HIT, MISS, or UNKNOWN info on all squares of the arena */
@@ -63,8 +62,7 @@ public class Attack {
         enemyShips = new EnemyShips();
 
         /* Is used while in AttackModeSink to continue finding the ship. Emptied after each ship is sunk. */
-        numHits = 0;
-        hitCoordinates = new Coordinate[Const.kMaxHitCoords];
+        hitCoordinates = new ArrayList();
 
         /* Create array of size of the game to holds HIT/MISS/UNKNOWN for each square */
         arena = new AttackResponse[Const.kGameDimensionX][Const.kGameDimensionY][Const.kGameDimensionZ];
@@ -193,12 +191,14 @@ public class Attack {
         emptySinkArray();
 
         /* Loop through all the hits and calculate the next best cell to fire at */
-        for( int i = 0; i < numHits; i++ ) {
+        for( int i = 0; i < hitCoordinates.size(); i++ ) {
+
+            Coordinate c = (Coordinate)hitCoordinates.get(i);
 
             /* Get the hit coordinates */
-            x = hitCoordinates[i].x;
-            y = hitCoordinates[i].y;
-            z = hitCoordinates[i].z;
+            x = c.x;
+            y = c.y;
+            z = c.z;
 
             /* Now we want to test all the cells around this hit to see which has the highest probability   */
             /* of containing a ship.                                                                        */
@@ -262,22 +262,21 @@ public class Attack {
     {
         /* Check whether the response contains HIT or MISS */
         /* and update 'arena' */
-        if( response.contains( Const.kAttackResponseStrHit ) && switchToSearch(response) ) {
+        if( response.contains( Const.kAttackResponseStrHit ) ) {
+
             /* Update the arena */
             arena[c.x][c.y][c.z] = AttackResponse.HIT;
-
-            /* Start searching for a new ship */
-            attackMode = AttackMode.AttackModeSearch;
-        } else if( response.contains( Const.kAttackResponseStrHit ) ) {
-            /* Update the arena */
-            arena[c.x][c.y][c.z] = AttackResponse.HIT;
-
-            /* Switch to AttackModeSink */
-            attackMode = AttackMode.AttackModeSink;
 
             /* Update the hit coordinates array */
-            hitCoordinates[numHits++] = new Coordinate( c.x, c.y, c.z );
+            hitCoordinates.add( new Coordinate( c.x, c.y, c.z ) );
 
+            if( switchToSearch( response ) ) {
+                /* Start searching for a new ship */
+                attackMode = AttackMode.AttackModeSearch;
+            } else {
+                /* Switch to AttackModeSink */
+                attackMode = AttackMode.AttackModeSink;
+            }
         } else if( response.contains( Const.kAttackResponseStrMiss ) ) {
             /* Update the arena */
             if( arena[c.x][c.y][c.z] == AttackResponse.UNKNOWN )
@@ -286,6 +285,7 @@ public class Attack {
 
         Log.WriteLog( "Result: " + arena[c.x][c.y][c.z] );
     }
+
 
     private boolean switchToSearch(String response)
     {
@@ -306,15 +306,17 @@ public class Attack {
             /* sunk a ship and hit only its points, we should go back to "search"   */
             /* mode (return true). If we've hit two ships, we should stay in        */
             /* "sink" mode until we've sunk all the ships we've hit.                */
-            if( hitCoordinates.length == Const.kNumCoordinatesFF || hitCoordinates.length == sunkShipHits ) {
+            if( hitCoordinates.size() == Const.kNumCoordinatesFF || hitCoordinates.size() == sunkShipHits ) {
                 /* We've sunk the ship and we're removing the hits from the         */
                 /* hitCoordinate array, so we should reset the number               */
                 /* of hits we're tracking in the hitCoordinate array that account   */
                 /* for sunk ships.                                                  */
                 sunkShipHits = 0;
 
-                /* Resets the hitCoordinate array (we start adding from index 0 again)  */
-                numHits = 0;
+                /* Clear the arrayList of hit coordinates since we no longer need   */
+                /* to look for ships around the "hit" squares because we've sunk    */
+                /* the ship.                                                        */
+                hitCoordinates.clear();
 
                 return true;
             }
@@ -322,36 +324,36 @@ public class Attack {
             enemyShips.BB = EnemyShips.ShipStatus.ShipStatusSunk;
             sunkShipHits += Const.kNumCoordinatesBB;
 
-            if( hitCoordinates.length == Const.kNumCoordinatesBB || hitCoordinates.length == sunkShipHits ) {
+            if( hitCoordinates.size() == Const.kNumCoordinatesBB || hitCoordinates.size() == sunkShipHits ) {
                 sunkShipHits = 0;
-                numHits = 0;
+                hitCoordinates.clear();
                 return true;
             }
         } else if( response.contains( Const.kShipNameCVL ) ) {
             enemyShips.CVL = EnemyShips.ShipStatus.ShipStatusSunk;
             sunkShipHits += Const.kNumCoordinatesCVL;
 
-            if( hitCoordinates.length == Const.kNumCoordinatesCVL || hitCoordinates.length == sunkShipHits ) {
+            if( hitCoordinates.size() == Const.kNumCoordinatesCVL || hitCoordinates.size() == sunkShipHits ) {
                 sunkShipHits = 0;
-                numHits = 0;
+                hitCoordinates.clear();
                 return true;
             }
         } else if( response.contains( Const.kShipNameDDH ) ) {
             enemyShips.DDH = EnemyShips.ShipStatus.ShipStatusSunk;
             sunkShipHits += Const.kNumCoordinatesDDH;
 
-            if( hitCoordinates.length == Const.kNumCoordinatesDDH || hitCoordinates.length == sunkShipHits ) {
+            if( hitCoordinates.size() == Const.kNumCoordinatesDDH || hitCoordinates.size() == sunkShipHits ) {
                 sunkShipHits = 0;
-                numHits = 0;
+                hitCoordinates.clear();
                 return true;
             }
         } else if( response.contains( Const.kShipNameSSK ) ) {
             enemyShips.SSK = EnemyShips.ShipStatus.ShipStatusSunk;
             sunkShipHits += Const.kNumCoordinatesSSK;
 
-            if( hitCoordinates.length == Const.kNumCoordinatesSSK || hitCoordinates.length == sunkShipHits ) {
+            if( hitCoordinates.size() == Const.kNumCoordinatesSSK || hitCoordinates.size() == sunkShipHits ) {
                 sunkShipHits = 0;
-                numHits = 0;
+                hitCoordinates.clear();
                 return true;
             }
         }

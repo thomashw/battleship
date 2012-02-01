@@ -62,6 +62,4 @@ public class Const {
     /* Match responses */
     public static final String kGameOverLose = "LOSE";
     public static final String kGameOverWin = "WIN";
-    
-    public static final int kMaxHitCoords = 50;
 }
