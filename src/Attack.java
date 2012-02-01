@@ -103,19 +103,6 @@ public class Attack {
 
         switch (attackMode) {
             case AttackModeSearch:
-
-                /* Generate a random point */
-                do {
-                    x = rand.nextInt( Const.kMaxCoord - Const.kMinCoord + 1 );
-                    y = rand.nextInt( Const.kMaxCoord - Const.kMinCoord + 1 );
-                    z = rand.nextInt( Const.kMaxCoord - Const.kMinCoord + 1 );
-                } while( arena[x][y][z] != AttackResponse.UNKNOWN );
-
-                /* Update best attack coordinate */
-                bestAttackCoordinate.x = x;
-                bestAttackCoordinate.y = y;
-                bestAttackCoordinate.z = z;
-
                 /* Find the most likely square to contain a ship (also updates best attack coordinate) */
                 calculateSearchProbabilities();
                 break;
@@ -246,16 +233,6 @@ public class Attack {
                         bestAttackCoordinate.z = k;
                     }
                 }
-
-        /* If for some reason the program didn't find a good attack, just put it back into search mode  */
-        /* to avoid falling into an infinite loop of crappy shots.                                      */
-        //if( currentBestAttack == 0 ) {
-        /* Will stop us from using old values in the hitCoordinate array upon the next hit */
-        //  numHits = 0;
-
-        /* Start searching for a new ship */
-        //attackMode = AttackMode.AttackModeSearch;
-        //}
     }
 
     public void processAttackResponse( String response, Coordinate c )
