@@ -19,7 +19,17 @@ public class Attack {
     int numHits;
     Coordinate[] hitCoordinates;
 
-    /* Tracks what turn we're on */
+    /* If we've hit two ships, we don't know which hits were for which ships.   */
+    /* But, once we sink a ship, we will know how many hits in the hit array    */
+    /* have been accounted for. Once we sink another ship, if the number of     */
+    /* hits in the hit array add up to the size of both ships, we can now       */
+    /* ignore those hits and go back to "search" mode. If the number of hits    */
+    /* don't add up to the size of the sunk ships, we should stay in "sink"     */
+    /* mode. This variable holds the number of hits in the hitCoordinates       */
+    /* array that can be accounted for by sunk ships.                           */
+    int sunkShipHits;
+
+/* Tracks what turn we're on */
     private static int currentTurn;
 
     /* Holds HIT, MISS, or UNKNOWN info on all squares of the arena */
@@ -131,7 +141,7 @@ public class Attack {
                 for( int z = 0; z < shipSearchProbability[x][y].length; z++ ) {
                     shipSearchProbability[x][y][z] = 0;
 
-                    /* If the cell us UNKNOWN, calculate how many ways ships could fit into it  */
+                    /* If the cell is UNKNOWN, calculate how many ways ships could fit into it  */
                     /* and update the probability array. Otherwise, skip it.                    */
                     if( arena[x][y][z] != AttackResponse.UNKNOWN ) {
                         continue;
@@ -240,11 +250,11 @@ public class Attack {
         /* If for some reason the program didn't find a good attack, just put it back into search mode  */
         /* to avoid falling into an infinite loop of crappy shots.                                      */
         //if( currentBestAttack == 0 ) {
-            /* Will stop us from using old values in the hitCoordinate array upon the next hit */
-          //  numHits = 0;
+        /* Will stop us from using old values in the hitCoordinate array upon the next hit */
+        //  numHits = 0;
 
-            /* Start searching for a new ship */
-            //attackMode = AttackMode.AttackModeSearch;
+        /* Start searching for a new ship */
+        //attackMode = AttackMode.AttackModeSearch;
         //}
     }
 
@@ -252,12 +262,9 @@ public class Attack {
     {
         /* Check whether the response contains HIT or MISS */
         /* and update 'arena' */
-        if( response.contains( Const.kAttackResponseStrHit ) && shipIsSunk( response ) ) {
+        if( response.contains( Const.kAttackResponseStrHit ) && switchToSearch(response) ) {
             /* Update the arena */
             arena[c.x][c.y][c.z] = AttackResponse.HIT;
-
-            /* Will stop us from using old values in the hitCoordinate array upon the next hit */
-            numHits = 0;
 
             /* Start searching for a new ship */
             attackMode = AttackMode.AttackModeSearch;
@@ -280,27 +287,73 @@ public class Attack {
         Log.WriteLog( "Result: " + arena[c.x][c.y][c.z] );
     }
 
-    private boolean shipIsSunk( String response )
+    private boolean switchToSearch(String response)
     {
-
         /* If we've sunk any ship, we will want to switch back to "search" mode */
         /* and clear the hitCoordinate array as it's only used while sinking    */
         /* a ship.                                                              */
         if( response.contains( Const.kShipNameFF ) ) {
             enemyShips.FF = EnemyShips.ShipStatus.ShipStatusSunk;
-            return true;
+            sunkShipHits += Const.kNumCoordinatesFF;
+
+            /* If the array tracking hit coordinates has the same number as hits    */
+            /* as the ship, we can remove those hit coordinates from the array      */
+            /* since we don't need to check around those coordinates for new        */
+            /* hits anymore. If the number of coordinates in the array does not     */
+            /* match the size of the ship, this means we've hit two ships during    */
+            /* this attack and we don't really know which coordinates are whose     */
+            /* so we can't get rid of any in the array. Furthermore, if we've       */
+            /* sunk a ship and hit only its points, we should go back to "search"   */
+            /* mode (return true). If we've hit two ships, we should stay in        */
+            /* "sink" mode until we've sunk all the ships we've hit.                */
+            if( hitCoordinates.length == Const.kNumCoordinatesFF || hitCoordinates.length == sunkShipHits ) {
+                /* We've sunk the ship and we're removing the hits from the         */
+                /* hitCoordinate array, so we should reset the number               */
+                /* of hits we're tracking in the hitCoordinate array that account   */
+                /* for sunk ships.                                                  */
+                sunkShipHits = 0;
+
+                /* Resets the hitCoordinate array (we start adding from index 0 again)  */
+                numHits = 0;
+
+                return true;
+            }
         } else if( response.contains( Const.kShipNameBB ) ) {
             enemyShips.BB = EnemyShips.ShipStatus.ShipStatusSunk;
-            return true;
+            sunkShipHits += Const.kNumCoordinatesBB;
+
+            if( hitCoordinates.length == Const.kNumCoordinatesBB || hitCoordinates.length == sunkShipHits ) {
+                sunkShipHits = 0;
+                numHits = 0;
+                return true;
+            }
         } else if( response.contains( Const.kShipNameCVL ) ) {
             enemyShips.CVL = EnemyShips.ShipStatus.ShipStatusSunk;
-            return true;
+            sunkShipHits += Const.kNumCoordinatesCVL;
+
+            if( hitCoordinates.length == Const.kNumCoordinatesCVL || hitCoordinates.length == sunkShipHits ) {
+                sunkShipHits = 0;
+                numHits = 0;
+                return true;
+            }
         } else if( response.contains( Const.kShipNameDDH ) ) {
             enemyShips.DDH = EnemyShips.ShipStatus.ShipStatusSunk;
-            return true;
+            sunkShipHits += Const.kNumCoordinatesDDH;
+
+            if( hitCoordinates.length == Const.kNumCoordinatesDDH || hitCoordinates.length == sunkShipHits ) {
+                sunkShipHits = 0;
+                numHits = 0;
+                return true;
+            }
         } else if( response.contains( Const.kShipNameSSK ) ) {
             enemyShips.SSK = EnemyShips.ShipStatus.ShipStatusSunk;
-            return true;
+            sunkShipHits += Const.kNumCoordinatesSSK;
+
+            if( hitCoordinates.length == Const.kNumCoordinatesSSK || hitCoordinates.length == sunkShipHits ) {
+                sunkShipHits = 0;
+                numHits = 0;
+                return true;
+            }
         }
 
         return false;

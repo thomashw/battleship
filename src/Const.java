@@ -40,6 +40,13 @@ public class Const {
 												"DDH:" + kLayoutDDH + "|" + 
 												"BB:" + kLayoutBB + "|" + 
 												"CVL:" + kLayoutCVL + kLineSeparator;
+    
+    /* Number of coordinates for each ship */
+    public static final int kNumCoordinatesFF = 3;
+    public static final int kNumCoordinatesSSK = 5;
+    public static final int kNumCoordinatesDDH = 5;
+    public static final int kNumCoordinatesBB = 8;
+    public static final int kNumCoordinatesCVL = 13;
 
     /* Game dimensions */
     public static final int kGameDimensionX = 10;
