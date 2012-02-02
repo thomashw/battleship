@@ -64,4 +64,31 @@ public class Const {
     public static final String kGame = "GAME";
     public static final String kLose = "LOSE";
     public static final String kWin = "WIN";
+
+    /* Edge coordinates to check while searching. The algorithm initially ignores edges */
+    /* so I want to intentionally check some edge points. There's 24 in all.            */
+    public static Coordinate[] kEdgeSearchCoordinates = { new Coordinate(2,0,0),
+                                            new Coordinate(5,0,0),
+                                            new Coordinate(7,0,0),
+                                            new Coordinate(0,2,0),
+                                            new Coordinate(0,5,0),
+                                            new Coordinate(0,7,0),
+                                            new Coordinate(0,0,2),
+                                            new Coordinate(0,0,5),
+                                            new Coordinate(0,0,7),
+                                            new Coordinate(0,2,9),
+                                            new Coordinate(0,5,9),
+                                            new Coordinate(0,7,9),
+                                            new Coordinate(9,2,0),
+                                            new Coordinate(9,5,0),
+                                            new Coordinate(9,7,0),
+                                            new Coordinate(9,0,2),
+                                            new Coordinate(9,0,5),
+                                            new Coordinate(9,0,7),
+                                            new Coordinate(9,2,9),
+                                            new Coordinate(9,5,9),
+                                            new Coordinate(9,7,9),
+                                            new Coordinate(9,9,2),
+                                            new Coordinate(9,9,5),
+                                            new Coordinate(9,9,7) };
 }

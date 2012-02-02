@@ -31,6 +31,8 @@ public class Attack {
     /* Tracks what turn we're on */
     private static int currentTurn;
 
+    private int currentEdgeCoordinate;
+
     /* Holds HIT, MISS, or UNKNOWN info on all squares of the arena */
     AttackResponse[][][] arena;
 
@@ -121,52 +123,62 @@ public class Attack {
     {
         currentBestAttack = 0;
 
-        for( int x = 0; x < shipSearchProbability.length; x++ )
-            for( int y = 0; y < shipSearchProbability[x].length; y++ )
-                for( int z = 0; z < shipSearchProbability[x][y].length; z++ ) {
-                    shipSearchProbability[x][y][z] = 0;
+        /* Switch between the intentional edge coordinates and calculating      */
+        /* probabilities for the best squares to fire at until we've            */
+        /* fired at all 24 intentional edge coordinates.                        */
+        if( currentTurn % 2 == 0 && currentEdgeCoordinate < Const.kEdgeSearchCoordinates.length )
+        {
+            bestAttackCoordinate.x = Const.kEdgeSearchCoordinates[currentEdgeCoordinate].x;
+            bestAttackCoordinate.y = Const.kEdgeSearchCoordinates[currentEdgeCoordinate].y;
+            bestAttackCoordinate.z = Const.kEdgeSearchCoordinates[currentEdgeCoordinate].z;
+            currentEdgeCoordinate++;
+        } else {
+            for( int x = 0; x < shipSearchProbability.length; x++ )
+                for( int y = 0; y < shipSearchProbability[x].length; y++ )
+                    for( int z = 0; z < shipSearchProbability[x][y].length; z++ ) {
+                        shipSearchProbability[x][y][z] = 0;
 
-                    /* If the cell is UNKNOWN, calculate how many ways ships could fit into it  */
-                    /* and update the probability array. Otherwise, skip it.                    */
-                    if( arena[x][y][z] != AttackResponse.UNKNOWN ) {
-                        continue;
-                    } else {
+                        /* If the cell is UNKNOWN, calculate how many ways ships could fit into it  */
+                        /* and update the probability array. Otherwise, skip it.                    */
+                        if( arena[x][y][z] != AttackResponse.UNKNOWN ) {
+                            continue;
+                        } else {
+                            /* Add probability of hitting the FF if it's not already sunk */
+                            if( enemyShips.FF == EnemyShips.ShipStatus.ShipStatusAlive ) {
+                                shipSearchProbability[x][y][z] += Probability.probabilityFF( x, y, z, arena );
+                            }
 
-                        /* Add probability of hitting the FF if it's not already sunk */
-                        if( enemyShips.FF == EnemyShips.ShipStatus.ShipStatusAlive ) {
-                            shipSearchProbability[x][y][z] += Probability.probabilityFF( x, y, z, arena );
-                        }
+                            /* Add probability of hitting the SSK if it's not already sunk */
+                            if( enemyShips.SSK == EnemyShips.ShipStatus.ShipStatusAlive ) {
+                                shipSearchProbability[x][y][z] += Probability.probabilitySSK( x, y, z, arena );
+                            }
 
-                        /* Add probability of hitting the SSK if it's not already sunk */
-                        if( enemyShips.SSK == EnemyShips.ShipStatus.ShipStatusAlive ) {
-                            shipSearchProbability[x][y][z] += Probability.probabilitySSK( x, y, z, arena );
-                        }
+                            /* Add probability of hitting the DDH if it's not already sunk */
+                            if( enemyShips.DDH == EnemyShips.ShipStatus.ShipStatusAlive ) {
+                                shipSearchProbability[x][y][z] += Probability.probabilityDDH( x, y, z, arena );
+                            }
 
-                        /* Add probability of hitting the DDH if it's not already sunk */
-                        if( enemyShips.DDH == EnemyShips.ShipStatus.ShipStatusAlive ) {
-                            shipSearchProbability[x][y][z] += Probability.probabilityDDH( x, y, z, arena );
-                        }
+                            /* Add probability of hitting the BB if it's not already sunk */
+                            if( enemyShips.BB == EnemyShips.ShipStatus.ShipStatusAlive ) {
+                                shipSearchProbability[x][y][z] += Probability.probabilityBB( x, y, z, arena );
+                            }
 
-                        /* Add probability of hitting the BB if it's not already sunk */
-                        if( enemyShips.BB == EnemyShips.ShipStatus.ShipStatusAlive ) {
-                            shipSearchProbability[x][y][z] += Probability.probabilityBB( x, y, z, arena );
-                        }
+                            /* Add probability of hitting the BB if it's not already sunk */
+                            if( enemyShips.CVL == EnemyShips.ShipStatus.ShipStatusAlive ) {
+                                shipSearchProbability[x][y][z] += Probability.probabilityCVL( x, y, z, arena );
+                            }
 
-                        /* Add probability of hitting the BB if it's not already sunk */
-                        if( enemyShips.CVL == EnemyShips.ShipStatus.ShipStatusAlive ) {
-                            shipSearchProbability[x][y][z] += Probability.probabilityCVL( x, y, z, arena );
-                        }
+                            /* Update the best coordinate */
+                            if( shipSearchProbability[x][y][z] > currentBestAttack ) {
+                                currentBestAttack = shipSearchProbability[x][y][z];
 
-                        /* Update the best coordinate */
-                        if( shipSearchProbability[x][y][z] > currentBestAttack ) {
-                            currentBestAttack = shipSearchProbability[x][y][z];
-
-                            bestAttackCoordinate.x = x ;
-                            bestAttackCoordinate.y = y;
-                            bestAttackCoordinate.z = z;
+                                bestAttackCoordinate.x = x ;
+                                bestAttackCoordinate.y = y;
+                                bestAttackCoordinate.z = z;
+                            }
                         }
                     }
-                }
+        }
     }
 
     private void calculateSinkProbabilities()
