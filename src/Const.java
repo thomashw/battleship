@@ -11,7 +11,7 @@ public class Const {
 	public static final int kServerPort = 6130;
 	
 	/* Login team name */
-	public static final String kTeamName = "Thomas Hewton_Waters";
+	public static final String kTeamName = "Thomas Hewton-Waters";
 	
 	/* Login game password */
 	public static final String kGamePassword = "TEST_GAME";
