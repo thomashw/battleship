@@ -18,6 +18,9 @@ public class Attack {
     /* Holds an ArrayList of coordinates of the latest HITS while in AttackModeSink */
     ArrayList hitCoordinates;
 
+    /* Holds hit coordinates which we know belong to specific ships                 */
+    ArrayList ignoreHitCoordinates;
+
     /* If we've hit two ships, we don't know which hits were for which ships.   */
     /* But, once we sink a ship, we will know how many hits in the hit array    */
     /* have been accounted for. Once we sink another ship, if the number of     */
@@ -65,6 +68,9 @@ public class Attack {
 
         /* Is used while in AttackModeSink to continue finding the ship. Emptied after each ship is sunk. */
         hitCoordinates = new ArrayList();
+
+        /* Used while in AttackModeSink to ignore certain hit coordinates while searching for more hits. */
+        ignoreHitCoordinates = new ArrayList();
 
         /* Create array of size of the game to holds HIT/MISS/UNKNOWN for each square */
         arena = new AttackResponse[Const.kGameDimensionX][Const.kGameDimensionY][Const.kGameDimensionZ];
@@ -204,6 +210,22 @@ public class Attack {
 
             shipSinkProbability[x][y][z] = 0;
 
+            /* See if this coordinate is in the array of hit coordinates to ignore. */
+            /* If it is, don't calculate the probability for this coordinate.       */
+            /* We're ignoring coordinates when we know they belong to ships that    */
+            /* have been sunk.                                                      */
+            boolean ignore = false;
+            for( int j = 0; j < ignoreHitCoordinates.size(); j++ ) {
+                Coordinate temp = (Coordinate)ignoreHitCoordinates.get(j);
+                if( temp.x == c.x && temp.y == c.y && temp.z == c.z ) {
+                    ignore = true;
+                    break;
+                }
+            }
+
+            if( ignore == true )
+                continue;
+
             /* Find probability of hitting the FF again if it's not already sunk */
             if( enemyShips.FF == EnemyShips.ShipStatus.ShipStatusAlive ) {
                 Probability.probabilityFF( x, y, z, arena, shipSinkProbability );
@@ -285,6 +307,11 @@ public class Attack {
             enemyShips.FF = EnemyShips.ShipStatus.ShipStatusSunk;
             sunkShipHits += Const.kNumCoordinatesFF;
 
+            /* The last fired square obviously belongs to FF since it was sunk  */
+            /* so it can be ignored even if we are not                          */
+            /* going back to search mode.                                       */
+            ignoreHitCoordinates.add(new Coordinate(bestAttackCoordinate));
+
             /* If the array tracking hit coordinates has the same number as hits    */
             /* as the ship, we can remove those hit coordinates from the array      */
             /* since we don't need to check around those coordinates for new        */
@@ -312,6 +339,7 @@ public class Attack {
         } else if( response.contains( Const.kShipNameBB ) ) {
             enemyShips.BB = EnemyShips.ShipStatus.ShipStatusSunk;
             sunkShipHits += Const.kNumCoordinatesBB;
+            ignoreHitCoordinates.add(new Coordinate(bestAttackCoordinate));
 
             if( hitCoordinates.size() == Const.kNumCoordinatesBB || hitCoordinates.size() == sunkShipHits ) {
                 sunkShipHits = 0;
@@ -321,6 +349,7 @@ public class Attack {
         } else if( response.contains( Const.kShipNameCVL ) ) {
             enemyShips.CVL = EnemyShips.ShipStatus.ShipStatusSunk;
             sunkShipHits += Const.kNumCoordinatesCVL;
+            ignoreHitCoordinates.add(new Coordinate(bestAttackCoordinate));
 
             if( hitCoordinates.size() == Const.kNumCoordinatesCVL || hitCoordinates.size() == sunkShipHits ) {
                 sunkShipHits = 0;
@@ -330,6 +359,7 @@ public class Attack {
         } else if( response.contains( Const.kShipNameDDH ) ) {
             enemyShips.DDH = EnemyShips.ShipStatus.ShipStatusSunk;
             sunkShipHits += Const.kNumCoordinatesDDH;
+            ignoreHitCoordinates.add(new Coordinate(bestAttackCoordinate));
 
             if( hitCoordinates.size() == Const.kNumCoordinatesDDH || hitCoordinates.size() == sunkShipHits ) {
                 sunkShipHits = 0;
@@ -339,6 +369,7 @@ public class Attack {
         } else if( response.contains( Const.kShipNameSSK ) ) {
             enemyShips.SSK = EnemyShips.ShipStatus.ShipStatusSunk;
             sunkShipHits += Const.kNumCoordinatesSSK;
+            ignoreHitCoordinates.add(new Coordinate(bestAttackCoordinate));
 
             if( hitCoordinates.size() == Const.kNumCoordinatesSSK || hitCoordinates.size() == sunkShipHits ) {
                 sunkShipHits = 0;
