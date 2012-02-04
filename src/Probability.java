@@ -505,6 +505,194 @@ public class Probability {
                     shipSinkProb[x][y-1][z]++;
             }
 
+        /* The cell is the top middle cell is the y-z plane */
+        if( z < (arena[x][y].length - 1) && z > 0 && y > 1 )
+            if(     arena[x][y][z+1] != AttackResponse.MISS &&
+                    arena[x][y-1][z+1] != AttackResponse.MISS &&
+                    arena[x][y-2][z+1] != AttackResponse.MISS &&
+                    arena[x][y-2][z] != AttackResponse.MISS &&
+                    arena[x][y-2][z-1] != AttackResponse.MISS &&
+                    arena[x][y-1][z-1] != AttackResponse.MISS &&
+                    arena[x][y][z-1] != AttackResponse.MISS ) {
+
+                if(     arena[x][y][z+1] == AttackResponse.UNKNOWN &&
+                        arena[x][y-1][z+1] == AttackResponse.UNKNOWN &&
+                        arena[x][y-2][z+1] == AttackResponse.UNKNOWN &&
+                        arena[x][y-2][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y-2][z-1] == AttackResponse.UNKNOWN &&
+                        arena[x][y-1][z-1] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z-1] == AttackResponse.UNKNOWN )
+                    probability++;
+
+                if( arena[x][y][z+1] == AttackResponse.UNKNOWN )
+                    shipSinkProb[x][y][z+1]++;
+
+                if( arena[x][y][z-1] == AttackResponse.UNKNOWN )
+                    shipSinkProb[x][y][z-1]++;
+            }
+
+        /* The cell is the top right cell in the y-z plane   */
+        /* Need -2y, -2z, +2y, +1z */
+        if( y > 1 && z > 1 )
+            if(     arena[x][y-1][z] != AttackResponse.MISS &&
+                    arena[x][y-2][z] != AttackResponse.MISS &&
+                    arena[x][y-2][z-1] != AttackResponse.MISS &&
+                    arena[x][y-2][z-2] != AttackResponse.MISS &&
+                    arena[x][y-1][z-2] != AttackResponse.MISS &&
+                    arena[x][y][z-2] != AttackResponse.MISS &&
+                    arena[x][y][z-1] != AttackResponse.MISS ) {
+
+                if(     arena[x][y-1][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y-2][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y-2][z-1] == AttackResponse.UNKNOWN &&
+                        arena[x][y-2][z-2] == AttackResponse.UNKNOWN &&
+                        arena[x][y-1][z-2] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z-2] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z-1] == AttackResponse.UNKNOWN )
+                    probability++;
+
+                if( arena[x][y-1][z] == AttackResponse.UNKNOWN )
+                    shipSinkProb[x][y-1][z]++;
+
+                if( arena[x][y][z-1] == AttackResponse.UNKNOWN )
+                    shipSinkProb[x][y][z-1]++;
+            }
+
+        /* The cell is the right-middle cell in the y-z plane   */
+        /* Need -1y, -2z, +2y, +2z */
+        if( y > 0 && y < (arena[x].length - 1) && z > 1 )
+            if(     arena[x][y-1][z] != AttackResponse.MISS &&
+                    arena[x][y-1][z-1] != AttackResponse.MISS &&
+                    arena[x][y-1][z-2] != AttackResponse.MISS &&
+                    arena[x][y][z-2] != AttackResponse.MISS &&
+                    arena[x][y+1][z-2] != AttackResponse.MISS &&
+                    arena[x][y+1][z-1] != AttackResponse.MISS &&
+                    arena[x][y+1][z] != AttackResponse.MISS ) {
+
+                if(     arena[x][y-1][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y-1][z-1] == AttackResponse.UNKNOWN &&
+                        arena[x][y-1][z-2] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z-2] == AttackResponse.UNKNOWN &&
+                        arena[x][y+1][z-2] == AttackResponse.UNKNOWN &&
+                        arena[x][y+1][z-1] == AttackResponse.UNKNOWN &&
+                        arena[x][y+1][z] != AttackResponse.UNKNOWN )
+                    probability++;
+
+                if( arena[x][y-1][z] == AttackResponse.UNKNOWN )
+                    shipSinkProb[x][y-1][z]++;
+
+                if( arena[x][y+1][z] == AttackResponse.UNKNOWN )
+                    shipSinkProb[x][y+1][z]++;
+            }
+
+        /* The cell is the right-bottom cell in the y-z plane   */
+        /* Need -2z, +2y, +2z, -1y */
+        if( z > 1 && y < (arena[x].length - 2) )
+            if(     arena[x][y][z-1] != AttackResponse.MISS &&
+                    arena[x][y][z-2] != AttackResponse.MISS &&
+                    arena[x][y+1][z-2] != AttackResponse.MISS &&
+                    arena[x][y+2][z-2] != AttackResponse.MISS &&
+                    arena[x][y+2][z-1] != AttackResponse.MISS &&
+                    arena[x][y+2][z] != AttackResponse.MISS &&
+                    arena[x][y+1][z] != AttackResponse.MISS ) {
+
+                if(     arena[x][y][z-1] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z-2] == AttackResponse.UNKNOWN &&
+                        arena[x][y+1][z-2] == AttackResponse.UNKNOWN &&
+                        arena[x][y+2][z-2] == AttackResponse.UNKNOWN &&
+                        arena[x][y+2][z-1] == AttackResponse.UNKNOWN &&
+                        arena[x][y+2][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y+1][z] == AttackResponse.UNKNOWN )
+                    probability++;
+
+                if( arena[x][y][z-1] == AttackResponse.UNKNOWN )
+                    shipSinkProb[x][y][z-1]++;
+
+                if( arena[x][y+1][z] == AttackResponse.UNKNOWN )
+                    shipSinkProb[x][y+1][z]++;
+            }
+
+        /* The cell is the bottom-middle cell in the y-z plane */
+        /* Need -1z, +2y, +2z, -2y */
+        if( z > 0 && y < (arena[x].length - 2) && z < (arena[x][y].length - 1) )
+            if(     arena[x][y][z-1] != AttackResponse.MISS &&
+                    arena[x][y+1][z-1] != AttackResponse.MISS &&
+                    arena[x][y+2][z-1] != AttackResponse.MISS &&
+                    arena[x][y+2][z] != AttackResponse.MISS &&
+                    arena[x][y+2][z+1] != AttackResponse.MISS &&
+                    arena[x][y+1][z+1] != AttackResponse.MISS &&
+                    arena[x][y][z+1] != AttackResponse.MISS ) {
+
+                if(     arena[x][y][z-1] == AttackResponse.UNKNOWN &&
+                        arena[x][y+1][z-1] == AttackResponse.UNKNOWN &&
+                        arena[x][y+2][z-1] == AttackResponse.UNKNOWN &&
+                        arena[x][y+2][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y+2][z+1] == AttackResponse.UNKNOWN &&
+                        arena[x][y+1][z+1] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z+1] == AttackResponse.UNKNOWN )
+                    probability++;
+
+                if( arena[x][y][z-1] == AttackResponse.UNKNOWN )
+                    shipSinkProb[x][y][z-1]++;
+
+                if( arena[x][y][z+1] == AttackResponse.UNKNOWN )
+                    shipSinkProb[x][y][z+1]++;
+            }
+
+        /* The cell is the bottom left cell in the y-z plane */
+        /* Need +2y, +2z, -2y, -1z */
+        if( y < (arena[x].length - 2) && z < (arena[x][y].length - 2) )
+            if(     arena[x][y+1][z] != AttackResponse.MISS &&
+                    arena[x][y+2][z] != AttackResponse.MISS &&
+                    arena[x][y+2][z+1] != AttackResponse.MISS &&
+                    arena[x][y+2][z+2] != AttackResponse.MISS &&
+                    arena[x][y+1][z+2] != AttackResponse.MISS &&
+                    arena[x][y][z+2] != AttackResponse.MISS &&
+                    arena[x][y][z+1] != AttackResponse.MISS ) {
+
+                if(     arena[x][y+1][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y+2][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y+2][z+1] == AttackResponse.UNKNOWN &&
+                        arena[x][y+2][z+2] == AttackResponse.UNKNOWN &&
+                        arena[x][y+1][z+2] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z+2] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z+1] == AttackResponse.UNKNOWN )
+                    probability++;
+
+                if( arena[x][y+1][z] == AttackResponse.UNKNOWN )
+                    shipSinkProb[x][y+1][z]++;
+
+                if( arena[x][y][z+1] == AttackResponse.UNKNOWN )
+                    shipSinkProb[x][y][z+1]++;
+            }
+
+        /* The cell is the left-middle cell in the y-z plane */
+        /* Need +1y, +2z, -2y, -2z */
+        if( y < (arena[x].length - 1) && z < (arena[x][y].length - 2) && y > 0 )
+            if(     arena[x][y+1][z] != AttackResponse.MISS &&
+                    arena[x][y+1][z+1] != AttackResponse.MISS &&
+                    arena[x][y+1][z+2] != AttackResponse.MISS &&
+                    arena[x][y][z+2] != AttackResponse.MISS &&
+                    arena[x][y-1][z+2] != AttackResponse.MISS &&
+                    arena[x][y-1][z+1] != AttackResponse.MISS &&
+                    arena[x][y-1][z] != AttackResponse.MISS ) {
+
+                if(     arena[x][y+1][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y+1][z+1] == AttackResponse.UNKNOWN &&
+                        arena[x][y+1][z+2] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z+2] == AttackResponse.UNKNOWN &&
+                        arena[x][y-1][z+2] == AttackResponse.UNKNOWN &&
+                        arena[x][y-1][z+1] == AttackResponse.UNKNOWN &&
+                        arena[x][y-1][z] == AttackResponse.UNKNOWN )
+                    probability++;
+
+                if( arena[x][y+1][z] == AttackResponse.UNKNOWN )
+                    shipSinkProb[x][y+1][z]++;
+
+                if( arena[x][y-1][z] == AttackResponse.UNKNOWN )
+                    shipSinkProb[x][y-1][z]++;
+            }
+
         return probability;
     }
 
