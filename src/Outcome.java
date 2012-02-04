@@ -19,4 +19,12 @@ public class Outcome {
 
         return false;
     }
+    
+    public static boolean didFail( String response )
+    {
+        if( response.contains( Const.kFail ) )
+            return true;
+
+        return false;
+    }
 }

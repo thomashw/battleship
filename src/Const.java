@@ -65,6 +65,7 @@ public class Const {
     public static final String kGame = "GAME";
     public static final String kLose = "LOSE";
     public static final String kWin = "WIN";
+    public static final String kFail = "FAIL";
 
     /* Edge coordinates to check while searching. The algorithm initially ignores edges */
     /* so I want to intentionally check some edge points. There's 24 in all.            */

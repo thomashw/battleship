@@ -287,8 +287,6 @@ public class Attack {
             if( arena[c.x][c.y][c.z] == AttackResponse.UNKNOWN )
                 arena[c.x][c.y][c.z] = AttackResponse.MISS;
         }
-
-        Log.WriteLog( "Result: " + arena[c.x][c.y][c.z] );
     }
 
 

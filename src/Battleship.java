@@ -55,17 +55,22 @@ public class Battleship {
 
             /* Print the login response */
             try {
-                Log.WriteLog( "Login response: " + bShip.pComm.readLine() );
+                serverResponse = bShip.pComm.readLine();
+                Log.WriteLog( "Login response: " + serverResponse );
             } catch( IOException e ) {
                 System.err.println( e );
             }
+
+            if( Outcome.didFail( serverResponse ) )
+                return;
 
             /* Send ship layout */
             bShip.pComm.sendShipLayout( bShip.myShips.generateLayout() );
 
             /* Print ship layout response */
             try {
-                Log.WriteLog( "Ship layout response: " + bShip.pComm.readLine());
+                serverResponse = bShip.pComm.readLine();
+                Log.WriteLog( "Ship layout response: " + serverResponse );
             } catch( IOException e ) {
                 System.err.println( e );
             }
