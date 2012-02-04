@@ -60,7 +60,7 @@ public class Attack {
     public Attack()
     {
         /* Initialize to 1 for first turn */
-        currentTurn = 1;
+        currentTurn = 0;
 
         /* Begin by searching for ships */
         attackMode = AttackMode.AttackModeSearch;
@@ -280,7 +280,7 @@ public class Attack {
     {
         /* Check whether the response contains HIT or MISS */
         /* and update 'arena' */
-        if( response.contains( Const.kAttackResponseStrHit ) ) {
+        if( response.contains( Const.kAttackResponseStrHit ) || response.contains( Const.kWin ) ) {
 
             /* Update the arena */
             arena[c.x][c.y][c.z] = AttackResponse.HIT;
