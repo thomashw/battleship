@@ -118,7 +118,9 @@ public class Attack {
                 /* If the arrayList has hits from previous games in it, use them.   */
                 if( prevGameHits.size() > 0 && prevGameHitIndex < prevGameHits.size() )
                     return (Coordinate)prevGameHits.get(prevGameHitIndex++);
-                break;
+                else
+                  attackMode = AttackMode.AttackModeSearch;
+                // No break because we just switched modes & need to calculate NOW, not next turn   */
             case AttackModeSearch:
                 /* Find the most likely square to contain a ship (also updates best attack coordinate) */
                 calculateSearchProbabilities();
