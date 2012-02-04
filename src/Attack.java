@@ -52,9 +52,6 @@ public class Attack {
     /* Holds the alive/dead status of the enemies ships */
     EnemyShips enemyShips;
 
-    /* Used to randomly fire on opponent */
-    Random rand;
-
     public Attack()
     {
         /* Initialize to 1 for first turn */
@@ -90,9 +87,6 @@ public class Attack {
             for( int j = 0; j < arena[i].length; j++ )
                 for( int k = 0; k < arena[i][j].length; k++ )
                     arena[i][j][k] = AttackResponse.UNKNOWN;
-
-        /* Initialize Random object used to randomly choose firing points */
-        rand = new Random();
     }
 
     public void incrementTurn()

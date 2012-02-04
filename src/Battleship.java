@@ -8,6 +8,7 @@ import java.io.IOException;
 public class Battleship {
     public PasonComm pComm;
     public Attack attack;
+    public MyShips myShips;
 
     public Battleship()
     {
@@ -16,6 +17,9 @@ public class Battleship {
 
         Log.WriteLog( "Initializing Attack object." );
         this.attack = new Attack();
+
+        Log.WriteLog( "Initializing MyShips object." );
+        myShips = new MyShips();
     }
 
     public static void main( String[] args )
@@ -57,7 +61,7 @@ public class Battleship {
             }
 
             /* Send ship layout */
-            bShip.pComm.sendShipLayout();
+            bShip.pComm.sendShipLayout( bShip.myShips.generateLayout() );
 
             /* Print ship layout response */
             try {

@@ -10,10 +10,10 @@ public class EnemyShips {
     }
 
     public ShipStatus FF;
-    ShipStatus SSK;
-    ShipStatus DDH;
-    ShipStatus BB;
-    ShipStatus CVL;
+    public ShipStatus SSK;
+    public ShipStatus DDH;
+    public ShipStatus BB;
+    public ShipStatus CVL;
 
     public EnemyShips()
     {

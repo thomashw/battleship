@@ -44,10 +44,10 @@ public class PasonComm {
 		this.writeLine( Const.kLoginRequest );
 	}
 	
-	public void sendShipLayout()
+	public void sendShipLayout( String layout )
 	{
         Log.WriteLog( "Sending ship layout." );
-		this.writeLine( Const.kShipLayout );
+		this.writeLine( layout + Const.kLineSeparator );
 	}
 	
 	public void fire( Coordinate c )
