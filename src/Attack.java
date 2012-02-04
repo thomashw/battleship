@@ -54,6 +54,7 @@ public class Attack {
     /* Holds the coordinate with the current highest probability of holding a ship */
     int currentBestAttack;
     Coordinate bestAttackCoordinate;
+    Coordinate lastBestAttackCoordinate;
 
     /* Holds the alive/dead status of the enemies ships */
     EnemyShips enemyShips;
@@ -91,6 +92,7 @@ public class Attack {
         /* Create the best attack coordinate to hold the coordinate with the highest probability */
         /* of hiding a ship. It changes every turn based on misses/hits */
         bestAttackCoordinate = new Coordinate();
+        lastBestAttackCoordinate = new Coordinate();
 
         /* Initialize the game array to UNKNOWN */
         for( int i = 0; i < arena.length; i++ )
@@ -133,6 +135,16 @@ public class Attack {
                 break;
         }
 
+        if( lastBestAttackCoordinate.x == bestAttackCoordinate.x && lastBestAttackCoordinate.y == bestAttackCoordinate.y && lastBestAttackCoordinate.z == bestAttackCoordinate.z ) {
+            Random rand = new Random();
+            bestAttackCoordinate.x = rand.nextInt(Const.kMaxCoord + 1);
+            bestAttackCoordinate.y = rand.nextInt(Const.kMaxCoord + 1);
+            bestAttackCoordinate.z = rand.nextInt(Const.kMaxCoord + 1);
+            attackMode = AttackMode.AttackModeSearch;
+        }
+
+        lastBestAttackCoordinate = new Coordinate(bestAttackCoordinate);
+
         return bestAttackCoordinate;
     }
 
@@ -150,9 +162,9 @@ public class Attack {
             bestAttackCoordinate.z = Const.kEdgeSearchCoordinates[currentEdgeCoordinate].z;
             currentEdgeCoordinate++;
         } else {
-            for( int x = 0; x < shipSearchProbability.length; x++ )
-                for( int y = 0; y < shipSearchProbability[x].length; y++ )
-                    for( int z = 0; z < shipSearchProbability[x][y].length; z++ ) {
+            for( int x = 0; x < arena.length; x++ )
+                for( int y = 0; y < arena[x].length; y++ )
+                    for( int z = 0; z < arena[x][y].length; z++ ) {
                         shipSearchProbability[x][y][z] = 0;
 
                         /* If the cell is UNKNOWN, calculate how many ways ships could fit into it  */
@@ -287,6 +299,7 @@ public class Attack {
 
             /* Start searching for a new ship */
             attackMode = AttackMode.AttackModeSearch;
+            Log.WriteLog( "Attack bug. Switching to search mode." );
         }
     }
 
@@ -307,9 +320,11 @@ public class Attack {
                 if( switchToSearch( response ) ) {
                     /* Start searching for a new ship */
                     attackMode = AttackMode.AttackModeSearch;
+                    Log.WriteLog( "Switching to search." );
                 } else {
                     /* Switch to AttackModeSink */
                     attackMode = AttackMode.AttackModeSink;
+                    Log.WriteLog( "Switching to attack mode." );
                 }
             }
         } else if( response.contains( Const.kAttackResponseStrMiss ) ) {
@@ -318,6 +333,7 @@ public class Attack {
             if( attackMode == AttackMode.AttackModePreviousHits ) {
                 prevGameHits.clear();
                 attackMode = AttackMode.AttackModeSearch;
+                Log.WriteLog( "Previous hits didn't work. Switching to search." );
             }
 
             /* Update the arena */

@@ -475,6 +475,36 @@ public class Probability {
                     shipSinkProb[x-1][y][z]++;
             }
 
+        /*************/
+        /* y-z plane */
+        /*************/
+
+        /* The cell is the top left cell is the y-z plane */
+        if( z < (arena[x][y].length - 2) && y > 1 )
+            if(     arena[x][y][z+1] != AttackResponse.MISS &&
+                    arena[x][y][z+2] != AttackResponse.MISS &&
+                    arena[x][y-1][z+2] != AttackResponse.MISS &&
+                    arena[x][y-2][z+2] != AttackResponse.MISS &&
+                    arena[x][y-2][z+1] != AttackResponse.MISS &&
+                    arena[x][y-2][z] != AttackResponse.MISS &&
+                    arena[x][y-1][z] != AttackResponse.MISS ) {
+
+                if(     arena[x][y][z+1] == AttackResponse.UNKNOWN &&
+                        arena[x][y][z+2] == AttackResponse.UNKNOWN &&
+                        arena[x][y-1][z+2] == AttackResponse.UNKNOWN &&
+                        arena[x][y-2][z+2] == AttackResponse.UNKNOWN &&
+                        arena[x][y-2][z+1] == AttackResponse.UNKNOWN &&
+                        arena[x][y-2][z] == AttackResponse.UNKNOWN &&
+                        arena[x][y-1][z] == AttackResponse.UNKNOWN )
+                    probability++;
+
+                if( arena[x][y][z+1] == AttackResponse.UNKNOWN )
+                    shipSinkProb[x][y][z+1]++;
+
+                if( arena[x][y-1][z] == AttackResponse.UNKNOWN )
+                    shipSinkProb[x][y-1][z]++;
+            }
+
         return probability;
     }
 
