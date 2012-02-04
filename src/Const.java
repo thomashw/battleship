@@ -40,7 +40,7 @@ public class Const {
 												"DDH:" + kLayoutDDH + "|" + 
 												"BB:" + kLayoutBB + "|" + 
 												"CVL:" + kLayoutCVL + kLineSeparator;
-    public static final int kNumShipLayouts = 10;
+    public static final int kNumShipLayouts = 12;
     
     /* Number of coordinates for each ship */
     public static final int kNumCoordinatesFF = 3;
