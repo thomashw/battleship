@@ -102,6 +102,13 @@ public class Battleship {
             /* The game is now over. Copy all the hits into prevGameHits so we can check them next game. */
             prevGameHits.clear();
             bShip.attack.copyGameHits( prevGameHits );
+
+            /* Close the connection */
+            try {
+                bShip.pComm.close();
+            } catch (IOException e) {
+                System.err.println( e );
+            }
         }
     }
 }

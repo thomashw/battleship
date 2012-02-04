@@ -5,7 +5,7 @@
 
 public class Const {
 	/* Server URL */
-	public static final String kServerUrl = "pason2.enel.ucalgary.ca";
+	public static final String kServerUrl = "pason1.enel.ucalgary.ca";
 	
 	/* Server Port */
 	public static final int kServerPort = 6130;
@@ -14,7 +14,7 @@ public class Const {
 	public static final String kTeamName = "Thomas Hewton-Waters";
 	
 	/* Login game password */
-	public static final String kGamePassword = "b6urwdy0;";
+	public static final String kGamePassword = "TEST_GAME";
 	
 	/* End all communications with a line separator */
 	public static final String kLineSeparator = "\r\n";
