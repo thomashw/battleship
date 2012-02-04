@@ -4,6 +4,7 @@
  */
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Battleship {
     public PasonComm pComm;
@@ -25,6 +26,7 @@ public class Battleship {
     public static void main( String[] args )
     {
         String serverResponse = new String();
+        ArrayList prevGameHits = new ArrayList();
 
         Log.WriteLog( "\nStarting new match." );
         while( !Outcome.isMatchOver( serverResponse ) ) {
@@ -75,6 +77,9 @@ public class Battleship {
                 System.err.println( e );
             }
 
+            /* Copy over the previous games hits to our Attack object */
+            bShip.attack.prevGameHits = prevGameHits;
+
             /* Begin the game & wait until it's over */
             while( !Outcome.isGameOver( serverResponse ) && !Outcome.isMatchOver( serverResponse ) ) {
 
@@ -93,6 +98,10 @@ public class Battleship {
                     System.err.println( e );
                 }
             }
+
+            /* The game is now over. Copy all the hits into prevGameHits so we can check them next game. */
+            prevGameHits.clear();
+            bShip.attack.copyGameHits( prevGameHits );
         }
     }
 }

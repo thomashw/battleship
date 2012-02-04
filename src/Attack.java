@@ -21,6 +21,11 @@ public class Attack {
     /* Holds hit coordinates which we know belong to specific ships                 */
     ArrayList ignoreHitCoordinates;
 
+    /* Holds hits we made in the last game. We will check and see if they left      */
+    /* their ships in the same place.                                               */
+    ArrayList prevGameHits;
+    int prevGameHitIndex;
+
     /* If we've hit two ships, we don't know which hits were for which ships.   */
     /* But, once we sink a ship, we will know how many hits in the hit array    */
     /* have been accounted for. Once we sink another ship, if the number of     */
@@ -62,6 +67,10 @@ public class Attack {
 
         /* Track the enemies ships */
         enemyShips = new EnemyShips();
+        
+        /* Tracks old hits */
+        prevGameHitIndex = 0;
+        prevGameHits = new ArrayList();
 
         /* Is used while in AttackModeSink to continue finding the ship. Emptied after each ship is sunk. */
         hitCoordinates = new ArrayList();
@@ -102,6 +111,10 @@ public class Attack {
     public Coordinate generateAttack()
     {
         int x, y, z;
+
+        if( prevGameHits.size() > 0 && prevGameHitIndex < prevGameHits.size() ) {
+            return (Coordinate)prevGameHits.get(prevGameHitIndex++);
+        }
 
         switch (attackMode) {
             case AttackModeSearch:
@@ -283,6 +296,10 @@ public class Attack {
                 attackMode = AttackMode.AttackModeSink;
             }
         } else if( response.contains( Const.kAttackResponseStrMiss ) ) {
+
+            /* Stop using previous games hits */
+            prevGameHits.clear();
+
             /* Update the arena */
             if( arena[c.x][c.y][c.z] == AttackResponse.UNKNOWN )
                 arena[c.x][c.y][c.z] = AttackResponse.MISS;
@@ -379,5 +396,18 @@ public class Attack {
             for( int j = 0; j < shipSinkProbability[i].length; j++ )
                 for( int k = 0; k < shipSinkProbability[i][j].length; k++ )
                     shipSinkProbability[i][j][k] = 0;
+    }
+    
+    public void copyGameHits( ArrayList list )
+    {
+        for( int i = 0; i < arena.length; i++ )
+            for( int j = 0; j < arena[i].length; j++ )
+                for( int k = 0; k < arena[i][j].length; k++ ) {
+                    AttackResponse a = arena[i][j][k];
+                    
+                    if( a == AttackResponse.HIT ) {
+                        list.add( new Coordinate( i, j, k ) );
+                    }
+                }
     }
 }
