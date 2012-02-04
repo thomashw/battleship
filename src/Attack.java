@@ -141,6 +141,7 @@ public class Attack {
             bestAttackCoordinate.y = rand.nextInt(Const.kMaxCoord + 1);
             bestAttackCoordinate.z = rand.nextInt(Const.kMaxCoord + 1);
             attackMode = AttackMode.AttackModeSearch;
+            Log.WriteLog( "Last best coord is the same as this one. Choosing random." );
         }
 
         lastBestAttackCoordinate = new Coordinate(bestAttackCoordinate);
