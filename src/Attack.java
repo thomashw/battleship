@@ -8,6 +8,7 @@ import java.util.*;
 public class Attack {
 
     private enum AttackMode {
+        AttackModePreviousHits,
         AttackModeSearch,
         AttackModeSink
     }
@@ -63,11 +64,11 @@ public class Attack {
         currentTurn = 0;
 
         /* Begin by searching for ships */
-        attackMode = AttackMode.AttackModeSearch;
+        attackMode = AttackMode.AttackModePreviousHits;
 
         /* Track the enemies ships */
         enemyShips = new EnemyShips();
-        
+
         /* Tracks old hits */
         prevGameHitIndex = 0;
         prevGameHits = new ArrayList();
@@ -112,11 +113,12 @@ public class Attack {
     {
         int x, y, z;
 
-        if( prevGameHits.size() > 0 && prevGameHitIndex < prevGameHits.size() ) {
-            return (Coordinate)prevGameHits.get(prevGameHitIndex++);
-        }
-
         switch (attackMode) {
+            case AttackModePreviousHits:
+                /* If the arrayList has hits from previous games in it, use them.   */
+                if( prevGameHits.size() > 0 && prevGameHitIndex < prevGameHits.size() )
+                    return (Coordinate)prevGameHits.get(prevGameHitIndex++);
+                break;
             case AttackModeSearch:
                 /* Find the most likely square to contain a ship (also updates best attack coordinate) */
                 calculateSearchProbabilities();
@@ -288,17 +290,23 @@ public class Attack {
             /* Update the hit coordinates array */
             hitCoordinates.add( new Coordinate( c.x, c.y, c.z ) );
 
-            if( switchToSearch( response ) ) {
-                /* Start searching for a new ship */
-                attackMode = AttackMode.AttackModeSearch;
-            } else {
-                /* Switch to AttackModeSink */
-                attackMode = AttackMode.AttackModeSink;
+            /* We only switch to ModeSearch from PreviousHits on a MISS. */
+            if( attackMode != AttackMode.AttackModePreviousHits ) {
+                if( switchToSearch( response ) ) {
+                    /* Start searching for a new ship */
+                    attackMode = AttackMode.AttackModeSearch;
+                } else {
+                    /* Switch to AttackModeSink */
+                    attackMode = AttackMode.AttackModeSink;
+                }
             }
         } else if( response.contains( Const.kAttackResponseStrMiss ) ) {
 
             /* Stop using previous games hits */
-            prevGameHits.clear();
+            if( attackMode == AttackMode.AttackModePreviousHits ) {
+                prevGameHits.clear();
+                attackMode = AttackMode.AttackModeSearch;
+            }
 
             /* Update the arena */
             if( arena[c.x][c.y][c.z] == AttackResponse.UNKNOWN )
@@ -397,14 +405,14 @@ public class Attack {
                 for( int k = 0; k < shipSinkProbability[i][j].length; k++ )
                     shipSinkProbability[i][j][k] = 0;
     }
-    
+
     public void copyGameHits( ArrayList list )
     {
         for( int i = 0; i < arena.length; i++ )
             for( int j = 0; j < arena[i].length; j++ )
                 for( int k = 0; k < arena[i][j].length; k++ ) {
                     AttackResponse a = arena[i][j][k];
-                    
+
                     if( a == AttackResponse.HIT ) {
                         list.add( new Coordinate( i, j, k ) );
                     }
