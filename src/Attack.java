@@ -278,6 +278,16 @@ public class Attack {
                         bestAttackCoordinate.z = k;
                     }
                 }
+
+        /* If for some reason the program didn't find a good attack (i.e. there's a bug)                */
+        /* just put it back into search mode to avoid falling into an infinite loop of crappy shots.    */
+        if( currentBestAttack == 0 ) {
+            //sunkShipHits = 0;
+            //hitCoordinates.clear();
+
+            /* Start searching for a new ship */
+            attackMode = AttackMode.AttackModeSearch;
+        }
     }
 
     public void processAttackResponse( String response, Coordinate c )
