@@ -121,7 +121,7 @@ public class Attack {
                 if( prevGameHits.size() > 0 && prevGameHitIndex < prevGameHits.size() )
                     return (Coordinate)prevGameHits.get(prevGameHitIndex++);
                 else
-                  attackMode = AttackMode.AttackModeSearch;
+                    attackMode = AttackMode.AttackModeSearch;
                 // No break because we just switched modes & need to calculate NOW, not next turn   */
             case AttackModeSearch:
                 /* Find the most likely square to contain a ship (also updates best attack coordinate) */
@@ -317,16 +317,17 @@ public class Attack {
             hitCoordinates.add( new Coordinate( c.x, c.y, c.z ) );
 
             /* We only switch to ModeSearch from PreviousHits on a MISS. */
-            if( attackMode != AttackMode.AttackModePreviousHits ) {
-                if( switchToSearch( response ) ) {
-                    /* Start searching for a new ship */
-                    attackMode = AttackMode.AttackModeSearch;
-                    Log.WriteLog( "Switching to search." );
-                } else {
-                    /* Switch to AttackModeSink */
-                    attackMode = AttackMode.AttackModeSink;
-                    Log.WriteLog( "Switching to attack mode." );
-                }
+            /* If we shouldn't switch to search mode, then go to attack mode    */
+            /* unless we're in PreviousHits mode. This mode will switch itself  */
+            /* out when it's done sending previous hits.                        */
+            if( switchToSearch( response ) ) {
+                /* Start searching for a new ship */
+                attackMode = AttackMode.AttackModeSearch;
+                Log.WriteLog( "Switching to search." );
+            } else if( attackMode != AttackMode.AttackModePreviousHits ) {
+                /* Switch to AttackModeSink */
+                attackMode = AttackMode.AttackModeSink;
+                Log.WriteLog( "Switching to attack mode." );
             }
         } else if( response.contains( Const.kAttackResponseStrMiss ) ) {
 
@@ -342,7 +343,6 @@ public class Attack {
                 arena[c.x][c.y][c.z] = AttackResponse.MISS;
         }
     }
-
 
     private boolean switchToSearch(String response)
     {
@@ -380,7 +380,11 @@ public class Attack {
                 /* the ship.                                                        */
                 hitCoordinates.clear();
 
-                return true;
+                /* If we're not in PreviousHits mode and we just sunk a ship and we */
+                /* are sure we don't need to worry about any of the hits, we can    */
+                /* switch to search mode. */
+                if( attackMode != AttackMode.AttackModePreviousHits )
+                    return true;
             }
         } else if( response.contains( Const.kShipNameBB ) ) {
             enemyShips.BB = EnemyShips.ShipStatus.ShipStatusSunk;
@@ -390,7 +394,8 @@ public class Attack {
             if( hitCoordinates.size() == Const.kNumCoordinatesBB || hitCoordinates.size() == sunkShipHits ) {
                 sunkShipHits = 0;
                 hitCoordinates.clear();
-                return true;
+                if( attackMode != AttackMode.AttackModePreviousHits )
+                    return true;
             }
         } else if( response.contains( Const.kShipNameCVL ) ) {
             enemyShips.CVL = EnemyShips.ShipStatus.ShipStatusSunk;
@@ -400,7 +405,8 @@ public class Attack {
             if( hitCoordinates.size() == Const.kNumCoordinatesCVL || hitCoordinates.size() == sunkShipHits ) {
                 sunkShipHits = 0;
                 hitCoordinates.clear();
-                return true;
+                if( attackMode != AttackMode.AttackModePreviousHits )
+                    return true;
             }
         } else if( response.contains( Const.kShipNameDDH ) ) {
             enemyShips.DDH = EnemyShips.ShipStatus.ShipStatusSunk;
@@ -410,7 +416,8 @@ public class Attack {
             if( hitCoordinates.size() == Const.kNumCoordinatesDDH || hitCoordinates.size() == sunkShipHits ) {
                 sunkShipHits = 0;
                 hitCoordinates.clear();
-                return true;
+                if( attackMode != AttackMode.AttackModePreviousHits )
+                    return true;
             }
         } else if( response.contains( Const.kShipNameSSK ) ) {
             enemyShips.SSK = EnemyShips.ShipStatus.ShipStatusSunk;
@@ -420,7 +427,8 @@ public class Attack {
             if( hitCoordinates.size() == Const.kNumCoordinatesSSK || hitCoordinates.size() == sunkShipHits ) {
                 sunkShipHits = 0;
                 hitCoordinates.clear();
-                return true;
+                if( attackMode != AttackMode.AttackModePreviousHits )
+                    return true;
             }
         }
 
